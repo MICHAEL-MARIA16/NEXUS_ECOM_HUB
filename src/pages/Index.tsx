@@ -1,7 +1,7 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Search, ShoppingCart, User, Menu, X, Star, Heart } from "lucide-react";
+import { Search, ShoppingCart, User, Menu, X, Star, Heart, Truck, Shield, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -9,6 +9,27 @@ import { Card, CardContent } from "@/components/ui/card";
 const Index = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [cartItems, setCartItems] = useState(0);
+
+  useEffect(() => {
+    const updateCartCount = () => {
+      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      const totalItems = cart.reduce((total: number, item: any) => total + item.quantity, 0);
+      setCartItems(totalItems);
+    };
+
+    updateCartCount();
+    
+    // Listen for storage events to update cart count
+    window.addEventListener('storage', updateCartCount);
+    
+    // Custom event for same-tab updates
+    window.addEventListener('cartUpdated', updateCartCount);
+    
+    return () => {
+      window.removeEventListener('storage', updateCartCount);
+      window.removeEventListener('cartUpdated', updateCartCount);
+    };
+  }, []);
 
   // Sample products data
   const products = [
@@ -74,29 +95,46 @@ const Index = () => {
     }
   ];
 
-  const addToCart = (productId: number) => {
-    setCartItems(prev => prev + 1);
-    console.log(`Added product ${productId} to cart`);
+  const addToCart = (product: any) => {
+    const existingCart = JSON.parse(localStorage.getItem('cart') || '[]');
+    const existingItem = existingCart.find((item: any) => item.id === product.id);
+    
+    if (existingItem) {
+      existingItem.quantity += 1;
+    } else {
+      existingCart.push({ ...product, quantity: 1 });
+    }
+    
+    localStorage.setItem('cart', JSON.stringify(existingCart));
+    
+    // Update cart count
+    const totalItems = existingCart.reduce((total: number, item: any) => total + item.quantity, 0);
+    setCartItems(totalItems);
+    
+    // Dispatch custom event
+    window.dispatchEvent(new Event('cartUpdated'));
+    
+    console.log(`Added product ${product.id} to cart`);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-100 to-pink-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       {/* Header */}
-      <header className="bg-white shadow-lg sticky top-0 z-50">
+      <header className="bg-gradient-to-r from-slate-800 via-blue-900 to-indigo-900 shadow-2xl sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <div className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
                 <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
-                  <div className="w-3 h-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></div>
+                  <div className="w-3 h-3 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full"></div>
                 </div>
               </div>
               <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-transparent">
                   Nexus
                 </h1>
-                <p className="text-xs text-gray-500 -mt-1">All Things One Place</p>
+                <p className="text-xs text-blue-200 -mt-1">Royal Shopping Experience</p>
               </div>
             </div>
 
@@ -106,11 +144,11 @@ const Index = () => {
                 <Input
                   type="text"
                   placeholder="Search for products..."
-                  className="w-full pl-4 pr-12 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full pl-4 pr-12 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/90"
                 />
                 <Button
                   size="sm"
-                  className="absolute right-1 top-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+                  className="absolute right-1 top-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
                 >
                   <Search className="h-4 w-4" />
                 </Button>
@@ -121,25 +159,25 @@ const Index = () => {
             <div className="flex items-center space-x-4">
               {/* Desktop Navigation */}
               <div className="hidden md:flex items-center space-x-6">
-                <Link to="/login" className="flex items-center space-x-1 text-slate-700 hover:text-purple-600 transition-colors">
+                <Link to="/login" className="flex items-center space-x-1 text-blue-200 hover:text-white transition-colors">
                   <User className="h-5 w-5" />
                   <span>Login</span>
                 </Link>
-                <div className="relative">
-                  <ShoppingCart className="h-6 w-6 text-slate-700 hover:text-purple-600 cursor-pointer transition-colors" />
+                <Link to="/cart" className="relative">
+                  <ShoppingCart className="h-6 w-6 text-blue-200 hover:text-white cursor-pointer transition-colors" />
                   {cartItems > 0 && (
-                    <span className="absolute -top-2 -right-2 bg-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    <span className="absolute -top-2 -right-2 bg-gradient-to-r from-purple-500 to-indigo-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center shadow-lg">
                       {cartItems}
                     </span>
                   )}
-                </div>
+                </Link>
               </div>
 
               {/* Mobile Menu Button */}
               <Button
                 variant="ghost"
                 size="sm"
-                className="md:hidden"
+                className="md:hidden text-blue-200 hover:text-white"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
               >
                 {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -150,43 +188,43 @@ const Index = () => {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden bg-white border-t">
+          <div className="md:hidden bg-slate-800 border-t border-blue-700">
             <div className="px-4 py-4 space-y-4">
               <div className="relative">
                 <Input
                   type="text"
                   placeholder="Search for products..."
-                  className="w-full pl-4 pr-12 py-2"
+                  className="w-full pl-4 pr-12 py-2 bg-white/90"
                 />
                 <Search className="absolute right-3 top-2.5 h-5 w-5 text-gray-400" />
               </div>
-              <Link to="/login" className="flex items-center space-x-2 text-slate-700 hover:text-purple-600">
+              <Link to="/login" className="flex items-center space-x-2 text-blue-200 hover:text-white">
                 <User className="h-5 w-5" />
                 <span>Login</span>
               </Link>
-              <div className="flex items-center space-x-2 text-slate-700">
+              <Link to="/cart" className="flex items-center space-x-2 text-blue-200 hover:text-white">
                 <ShoppingCart className="h-5 w-5" />
                 <span>Cart ({cartItems})</span>
-              </div>
+              </Link>
             </div>
           </div>
         )}
       </header>
 
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-purple-600 via-purple-700 to-pink-600 text-white py-20">
+      <section className="relative bg-gradient-to-r from-slate-800 via-blue-900 to-indigo-900 text-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h2 className="text-5xl md:text-6xl font-bold mb-6">
-              Welcome to <span className="text-pink-300">Nexus</span>
+              Welcome to <span className="text-blue-300">Nexus</span>
             </h2>
-            <p className="text-xl md:text-2xl mb-4 text-purple-100">All Things, One Platform</p>
-            <p className="text-lg mb-8 text-purple-200 max-w-2xl mx-auto">
-              Discover amazing products, unbeatable prices, and exceptional service. Your one-stop destination for everything you need.
+            <p className="text-xl md:text-2xl mb-4 text-blue-100">Royal Shopping Experience</p>
+            <p className="text-lg mb-8 text-blue-200 max-w-2xl mx-auto">
+              Discover premium products, unbeatable prices, and exceptional service. Your luxury shopping destination awaits.
             </p>
             <Button
               size="lg"
-              className="bg-white text-purple-600 hover:bg-gray-100 font-semibold px-8 py-3 text-lg"
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-8 py-3 text-lg shadow-lg"
             >
               Start Shopping
             </Button>
@@ -200,33 +238,37 @@ const Index = () => {
           <div className="text-center mb-12">
             <h3 className="text-3xl font-bold text-slate-800 mb-4">Featured Products</h3>
             <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-              Explore our curated selection of top-quality products at amazing prices
+              Explore our curated selection of premium products at exceptional prices
             </p>
           </div>
 
           {/* Product Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {products.map((product) => (
-              <Card key={product.id} className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-0 shadow-lg">
+              <Card key={product.id} className="group hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border-0 shadow-lg bg-white">
                 <CardContent className="p-0">
-                  <div className="relative overflow-hidden rounded-t-lg">
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <div className="absolute top-2 left-2 bg-pink-500 text-white px-2 py-1 rounded-md text-xs font-semibold">
-                      {product.discount}% OFF
+                  <Link to={`/product/${product.id}`} className="block">
+                    <div className="relative overflow-hidden rounded-t-lg">
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <div className="absolute top-2 left-2 bg-gradient-to-r from-purple-500 to-indigo-500 text-white px-2 py-1 rounded-md text-xs font-semibold shadow-lg">
+                        {product.discount}% OFF
+                      </div>
+                      <button className="absolute top-2 right-2 p-2 bg-white/90 hover:bg-white rounded-full transition-colors shadow-lg">
+                        <Heart className="h-4 w-4 text-slate-600 hover:text-red-500" />
+                      </button>
                     </div>
-                    <button className="absolute top-2 right-2 p-2 bg-white/80 hover:bg-white rounded-full transition-colors">
-                      <Heart className="h-4 w-4 text-slate-600 hover:text-pink-500" />
-                    </button>
-                  </div>
+                  </Link>
                   
                   <div className="p-4">
-                    <h4 className="font-semibold text-slate-800 mb-2 line-clamp-2 group-hover:text-purple-600 transition-colors">
-                      {product.name}
-                    </h4>
+                    <Link to={`/product/${product.id}`}>
+                      <h4 className="font-semibold text-slate-800 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                        {product.name}
+                      </h4>
+                    </Link>
                     
                     <div className="flex items-center space-x-1 mb-2">
                       <div className="flex items-center">
@@ -256,8 +298,11 @@ const Index = () => {
                     </div>
                     
                     <Button
-                      onClick={() => addToCart(product.id)}
-                      className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        addToCart(product);
+                      }}
+                      className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold shadow-lg"
                     >
                       Add to Cart
                     </Button>
@@ -270,7 +315,7 @@ const Index = () => {
       </section>
 
       {/* Features Section */}
-      <section className="bg-gradient-to-r from-slate-50 to-purple-50 py-16">
+      <section className="bg-gradient-to-r from-slate-100 to-blue-100 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h3 className="text-3xl font-bold text-slate-800 mb-4">Why Choose Nexus?</h3>
@@ -278,51 +323,51 @@ const Index = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center p-6">
-              <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                <ShoppingCart className="h-8 w-8 text-white" />
+              <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <Truck className="h-8 w-8 text-white" />
               </div>
-              <h4 className="text-xl font-semibold text-slate-800 mb-2">Easy Shopping</h4>
-              <p className="text-slate-600">Intuitive interface makes shopping a breeze</p>
+              <h4 className="text-xl font-semibold text-slate-800 mb-2">Fast Delivery</h4>
+              <p className="text-slate-600">Free next-day delivery on all orders</p>
             </div>
             
             <div className="text-center p-6">
-              <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Star className="h-8 w-8 text-white" />
+              <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <Shield className="h-8 w-8 text-white" />
               </div>
-              <h4 className="text-xl font-semibold text-slate-800 mb-2">Top Quality</h4>
-              <p className="text-slate-600">Only the best products from trusted sellers</p>
+              <h4 className="text-xl font-semibold text-slate-800 mb-2">Secure Shopping</h4>
+              <p className="text-slate-600">100% secure payments and data protection</p>
             </div>
             
             <div className="text-center p-6">
-              <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Heart className="h-8 w-8 text-white" />
+              <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <RotateCcw className="h-8 w-8 text-white" />
               </div>
-              <h4 className="text-xl font-semibold text-slate-800 mb-2">Great Service</h4>
-              <p className="text-slate-600">24/7 customer support and fast delivery</p>
+              <h4 className="text-xl font-semibold text-slate-800 mb-2">Easy Returns</h4>
+              <p className="text-slate-600">30-day hassle-free return policy</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-slate-800 text-white py-12">
+      <footer className="bg-gradient-to-r from-slate-800 via-blue-900 to-indigo-900 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center space-x-2 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
                   <div className="w-4 h-4 bg-white rounded-full flex items-center justify-center">
-                    <div className="w-2 h-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></div>
+                    <div className="w-2 h-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full"></div>
                   </div>
                 </div>
                 <span className="text-xl font-bold">Nexus</span>
               </div>
-              <p className="text-slate-400">All Things, One Platform</p>
+              <p className="text-blue-200">Royal Shopping Experience</p>
             </div>
             
             <div>
               <h5 className="font-semibold mb-4">Quick Links</h5>
-              <ul className="space-y-2 text-slate-400">
+              <ul className="space-y-2 text-blue-200">
                 <li><Link to="#" className="hover:text-white transition-colors">Home</Link></li>
                 <li><Link to="#" className="hover:text-white transition-colors">Products</Link></li>
                 <li><Link to="#" className="hover:text-white transition-colors">About</Link></li>
@@ -332,7 +377,7 @@ const Index = () => {
             
             <div>
               <h5 className="font-semibold mb-4">Support</h5>
-              <ul className="space-y-2 text-slate-400">
+              <ul className="space-y-2 text-blue-200">
                 <li><Link to="#" className="hover:text-white transition-colors">Help Center</Link></li>
                 <li><Link to="#" className="hover:text-white transition-colors">Returns</Link></li>
                 <li><Link to="#" className="hover:text-white transition-colors">Shipping</Link></li>
@@ -342,7 +387,7 @@ const Index = () => {
             
             <div>
               <h5 className="font-semibold mb-4">Connect</h5>
-              <ul className="space-y-2 text-slate-400">
+              <ul className="space-y-2 text-blue-200">
                 <li><Link to="#" className="hover:text-white transition-colors">Facebook</Link></li>
                 <li><Link to="#" className="hover:text-white transition-colors">Twitter</Link></li>
                 <li><Link to="#" className="hover:text-white transition-colors">Instagram</Link></li>
@@ -351,7 +396,7 @@ const Index = () => {
             </div>
           </div>
           
-          <div className="border-t border-slate-700 mt-8 pt-8 text-center text-slate-400">
+          <div className="border-t border-blue-700 mt-8 pt-8 text-center text-blue-200">
             <p>&copy; 2024 Nexus. All rights reserved.</p>
           </div>
         </div>

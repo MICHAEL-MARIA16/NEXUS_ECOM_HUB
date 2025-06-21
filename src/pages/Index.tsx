@@ -59,7 +59,7 @@ const Index = () => {
     },
     {
       id: 3,
-      name: "Sony WH-1000XM5 Headphones",
+      name: "Sony WH-1000XM5 Headset",
       price: 299,
       originalPrice: 399,
       image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop",
@@ -88,7 +88,7 @@ const Index = () => {
       name: "Canon EOS R5 Camera",
       price: 2499,
       originalPrice: 2899,
-      image: "https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?w=400&h=400&fit=crop",
+      image: "https://www.goodfreephotos.com/albums/business-and-technology/canon-camera-t2i.jpg",
       rating: 4.9,
       reviews: 156,
       discount: 14,
@@ -332,7 +332,7 @@ const Index = () => {
             {/* Logo */}
             <Link to="/" className="flex items-center space-x-3">
               <img 
-                src="/lovable-uploads/53edf2d7-993b-41c1-979b-52b9fb1311e3.png" 
+                src="/image-uploads/53edf2d7-993b-41c1-979b-52b9fb1311e3.png" 
                 alt="Nexus Logo" 
                 className="w-10 h-10 object-contain"
               />

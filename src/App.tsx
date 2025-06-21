@@ -11,6 +11,9 @@ import NotFound from "./pages/NotFound";
 import ProductDetails from "./pages/ProductDetails";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
+import LikedProducts from "./pages/LikedProducts";
+import AuthGuard from "@/components/AuthGuard";
+
 
 const queryClient = new QueryClient();
 
@@ -28,6 +31,11 @@ const App = () => (
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="*" element={<NotFound />} />
+          <Route path="/liked" element={<AuthGuard><LikedProducts /></AuthGuard>} />
+          <Route path="/cart" element={<AuthGuard><Cart /></AuthGuard>} />
+          <Route path="/checkout" element={<AuthGuard><Checkout /></AuthGuard>} />
+          <Route path="/liked" element={<AuthGuard><LikedProducts /></AuthGuard>} />
+          <Route path="/admin" element={<AuthGuard><Admin /></AuthGuard>} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

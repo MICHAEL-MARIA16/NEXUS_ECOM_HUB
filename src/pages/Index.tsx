@@ -28,7 +28,7 @@ const Index = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [wishlist, setWishlist] = useState<number[]>([]);
 
-  const categories = ["All", "Laptops", "Smartphones", "Headphones", "Tablets", "Cameras"];
+  const categories = ["All", "Laptops", "Smartphones", "Headphones", "Tablets", "Cameras", "Gaming", "Smartwatches", "Speakers"];
   
   const products: Product[] = [
     {
@@ -107,6 +107,136 @@ const Index = () => {
       discount: 17,
       category: "Smartphones",
       brand: "Samsung",
+      inStock: true
+    },
+    {
+      id: 7,
+      name: "Dell XPS 15 Laptop",
+      price: 1299,
+      originalPrice: 1599,
+      image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&h=400&fit=crop",
+      rating: 4.6,
+      reviews: 278,
+      discount: 19,
+      category: "Laptops",
+      brand: "Dell",
+      inStock: true
+    },
+    {
+      id: 8,
+      name: "PlayStation 5 Console",
+      price: 499,
+      originalPrice: 599,
+      image: "https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=400&h=400&fit=crop",
+      rating: 4.8,
+      reviews: 1234,
+      discount: 17,
+      category: "Gaming",
+      brand: "Sony",
+      inStock: true
+    },
+    {
+      id: 9,
+      name: "Apple Watch Series 9",
+      price: 399,
+      originalPrice: 449,
+      image: "https://images.unsplash.com/photo-1551816230-ef5deaed4a26?w=400&h=400&fit=crop",
+      rating: 4.7,
+      reviews: 567,
+      discount: 11,
+      category: "Smartwatches",
+      brand: "Apple",
+      inStock: true
+    },
+    {
+      id: 10,
+      name: "Bose SoundLink Flex Speaker",
+      price: 149,
+      originalPrice: 199,
+      image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400&h=400&fit=crop",
+      rating: 4.5,
+      reviews: 345,
+      discount: 25,
+      category: "Speakers",
+      brand: "Bose",
+      inStock: true
+    },
+    {
+      id: 11,
+      name: "Microsoft Surface Pro 9",
+      price: 999,
+      originalPrice: 1199,
+      image: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400&h=400&fit=crop",
+      rating: 4.4,
+      reviews: 189,
+      discount: 17,
+      category: "Tablets",
+      brand: "Microsoft",
+      inStock: true
+    },
+    {
+      id: 12,
+      name: "AirPods Pro 2nd Gen",
+      price: 249,
+      originalPrice: 299,
+      image: "https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?w=400&h=400&fit=crop",
+      rating: 4.8,
+      reviews: 789,
+      discount: 17,
+      category: "Headphones",
+      brand: "Apple",
+      inStock: true
+    },
+    {
+      id: 13,
+      name: "Nintendo Switch OLED",
+      price: 349,
+      originalPrice: 399,
+      image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=400&fit=crop",
+      rating: 4.6,
+      reviews: 456,
+      discount: 13,
+      category: "Gaming",
+      brand: "Nintendo",
+      inStock: true
+    },
+    {
+      id: 14,
+      name: "Samsung Galaxy Watch 6",
+      price: 329,
+      originalPrice: 399,
+      image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=400&fit=crop",
+      rating: 4.5,
+      reviews: 234,
+      discount: 18,
+      category: "Smartwatches",
+      brand: "Samsung",
+      inStock: true
+    },
+    {
+      id: 15,
+      name: "JBL Charge 5 Speaker",
+      price: 179,
+      originalPrice: 229,
+      image: "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=400&h=400&fit=crop",
+      rating: 4.6,
+      reviews: 567,
+      discount: 22,
+      category: "Speakers",
+      brand: "JBL",
+      inStock: true
+    },
+    {
+      id: 16,
+      name: "Google Pixel 8 Pro",
+      price: 899,
+      originalPrice: 999,
+      image: "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=400&h=400&fit=crop",
+      rating: 4.7,
+      reviews: 345,
+      discount: 10,
+      category: "Smartphones",
+      brand: "Google",
       inStock: true
     }
   ];

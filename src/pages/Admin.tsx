@@ -9,7 +9,7 @@ import {
   Plus,
   Search,
   Filter,
-  Downloa,
+  Download,
   Edit,
   Trash2,
   Eye,

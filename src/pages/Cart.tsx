@@ -56,14 +56,14 @@ const Cart = () => {
 
   if (cartItems.length === 0) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-indigo-50">
         {/* Header */}
-        <header className="bg-gradient-to-r from-slate-800 to-blue-900 text-white sticky top-0 z-50 shadow-lg">
+        <header className="bg-gradient-to-r from-slate-800 to-indigo-900 text-white sticky top-0 z-50 shadow-lg">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center h-16">
               <Link
                 to="/"
-                className="flex items-center space-x-2 text-blue-200 hover:text-white transition-colors"
+                className="flex items-center space-x-2 text-indigo-200 hover:text-white transition-colors"
               >
                 <ArrowLeft className="h-5 w-5" />
                 <span>Back to Home</span>
@@ -76,9 +76,9 @@ const Cart = () => {
         <div className="max-w-4xl mx-auto px-4 py-16 text-center">
           <ShoppingBag className="h-24 w-24 text-slate-400 mx-auto mb-6" />
           <h2 className="text-3xl font-bold text-slate-800 mb-4">Your cart is empty</h2>
-          <p className="text-slate-600 mb-8">Add some products to get started!</p>
+          <p className="text-slate-600 mb-8">Time to explore more products!</p>
           <Link to="/">
-            <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-8 py-3">
+            <Button className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold px-8 py-3">
               Continue Shopping
             </Button>
           </Link>
@@ -88,14 +88,14 @@ const Cart = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-indigo-50">
       {/* Header */}
-      <header className="bg-gradient-to-r from-slate-800 to-blue-900 text-white sticky top-0 z-50 shadow-lg">
+      <header className="bg-gradient-to-r from-slate-800 to-indigo-900 text-white sticky top-0 z-50 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center h-16">
             <Link
               to="/"
-              className="flex items-center space-x-2 text-blue-200 hover:text-white transition-colors"
+              className="flex items-center space-x-2 text-indigo-200 hover:text-white transition-colors"
             >
               <ArrowLeft className="h-5 w-5" />
               <span>Back to Home</span>
@@ -174,12 +174,16 @@ const Cart = () => {
                     </div>
                   </div>
                 </div>
-                <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 text-lg">
-                  Proceed to Checkout
-                </Button>
-                <Button variant="outline" className="w-full mt-3">
-                  Continue Shopping
-                </Button>
+                <Link to="/checkout">
+                  <Button className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold py-3 text-lg mb-3">
+                    Proceed to Checkout
+                  </Button>
+                </Link>
+                <Link to="/">
+                  <Button variant="outline" className="w-full">
+                    Continue Shopping
+                  </Button>
+                </Link>
               </CardContent>
             </Card>
           </div>

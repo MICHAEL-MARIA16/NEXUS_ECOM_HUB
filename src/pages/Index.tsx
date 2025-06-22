@@ -1,238 +1,682 @@
-import React, { useState, useEffect } from 'react';
-import { ShoppingCart, Heart, Search, Star, Menu, X, User } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { Search, ShoppingCart, Star, Heart, User, Menu, X, Filter, SortAsc } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import UserDropdown from "@/components/UserDropdown";
+
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  originalPrice: number;
+  image: string;
+  rating: number;
+  reviews: number;
+  discount: number;
+  category: string;
+  brand: string;
+  inStock: boolean;
+  stock: number;
+}
 
 const Index = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [cartCount, setCartCount] = useState(0);
+  const [likedCount, setLikedCount] = useState(0);
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [sortBy, setSortBy] = useState("featured");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [cartItems, setCartItems] = useState<any[]>([]);
-  const [likedProducts, setLikedProducts] = useState<string[]>([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [currentUser, setCurrentUser] = useState<string | null>(null);
-  const navigate = useNavigate();
+  const [wishlist, setWishlist] = useState<number[]>([]);
 
-  useEffect(() => {
-    const savedCart = localStorage.getItem('cart');
-    if (savedCart) {
-      setCartItems(JSON.parse(savedCart));
-    }
-
-    const savedLiked = localStorage.getItem('likedProducts');
-    if (savedLiked) {
-      setLikedProducts(JSON.parse(savedLiked));
-    }
-
-    const user = localStorage.getItem('currentUser');
-    if (user) {
-      setCurrentUser(user);
-    }
-  }, []);
-
-  const products = [
+  const categories = ["All", "Laptops", "Smartphones", "Headphones", "Tablets", "Cameras", "Gaming", "Smartwatches", "Speakers", "Accessories"];
+  
+  const products: Product[] = [
     {
       id: 1,
-      name: "Canon EOS R5 Camera",
-      price: 3899,
-      image: "https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?w=400&h=300&fit=crop",
+      name: "MacBook Pro 16-inch M2",
+      price: 1999,
+      originalPrice: 2299,
+      image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=400&fit=crop",
       rating: 4.8,
-      reviews: 245,
-      category: "Electronics",
-      description: "Professional mirrorless camera with 45MP sensor",
-      stock: 4
-    },
-    {
-      id: 2,
-      name: "Apple MacBook Pro 16\"",
-      price: 2499,
-      image: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=400&h=300&fit=crop",
-      rating: 4.9,
-      reviews: 189,
-      category: "Electronics",
-      description: "Powerful laptop for professionals",
+      reviews: 324,
+      discount: 13,
+      category: "Laptops",
+      brand: "Apple",
+      inStock: true,
       stock: 7
     },
     {
-      id: 3,
-      name: "Sony WH-1000XM4 Headphones",
-      price: 349,
-      image: "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=400&h=300&fit=crop",
-      rating: 4.7,
-      reviews: 432,
-      category: "Electronics",
-      description: "Industry-leading noise canceling headphones",
+      id: 2,
+      name: "iPhone 15 Pro Max",
+      price: 1199,
+      originalPrice: 1299,
+      image: "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&h=400&fit=crop",
+      rating: 4.9,
+      reviews: 567,
+      discount: 8,
+      category: "Smartphones",
+      brand: "Apple",
+      inStock: true,
       stock: 12
     },
     {
+      id: 3,
+      name: "Sony WH-1000XM5 Headset",
+      price: 299,
+      originalPrice: 399,
+      image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop",
+      rating: 4.7,
+      reviews: 892,
+      discount: 25,
+      category: "Headphones",
+      brand: "Sony",
+      inStock: true,
+      stock: 15
+    },
+    {
       id: 4,
-      name: "Nike Air Max 270",
-      price: 150,
-      image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=300&fit=crop",
+      name: "iPad Pro 12.9-inch",
+      price: 899,
+      originalPrice: 1099,
+      image: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400&h=400&fit=crop",
       rating: 4.6,
-      reviews: 567,
-      category: "Fashion",
-      description: "Comfortable and stylish running shoes",
-      stock: 23
+      reviews: 234,
+      discount: 18,
+      category: "Tablets",
+      brand: "Apple",
+      inStock: true,
+      stock: 9
     },
     {
       id: 5,
-      name: "Samsung 65\" QLED TV",
-      price: 1299,
-      image: "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400&h=300&fit=crop",
-      rating: 4.5,
-      reviews: 298,
-      category: "Electronics",
-      description: "4K QLED Smart TV with vibrant colors",
-      stock: 8
+      name: "Canon EOS R5 Camera",
+      price: 2499,
+      originalPrice: 2899,
+      image: "https://cdn.wallpapersafari.com/20/87/u3MKjO.jpg",
+      rating: 4.8,
+      reviews: 156,
+      discount: 14,
+      category: "Cameras",
+      brand: "Canon",
+      inStock: true,
+      stock: 4
     },
     {
       id: 6,
-      name: "Adidas Ultraboost 22",
-      price: 180,
-      image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=300&fit=crop",
+      name: "Samsung Galaxy S24 Ultra",
+      price: 999,
+      originalPrice: 1199,
+      image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=400&fit=crop",
+      rating: 4.5,
+      reviews: 445,
+      discount: 17,
+      category: "Smartphones",
+      brand: "Samsung",
+      inStock: true,
+      stock: 18
+    },
+    {
+      id: 7,
+      name: "Dell XPS 15 Laptop",
+      price: 1299,
+      originalPrice: 1599,
+      image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&h=400&fit=crop",
+      rating: 4.6,
+      reviews: 278,
+      discount: 19,
+      category: "Laptops",
+      brand: "Dell",
+      inStock: true,
+      stock: 6
+    },
+    {
+      id: 8,
+      name: "PlayStation 5 Console",
+      price: 499,
+      originalPrice: 599,
+      image: "https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=400&h=400&fit=crop",
+      rating: 4.8,
+      reviews: 1234,
+      discount: 17,
+      category: "Gaming",
+      brand: "Sony",
+      inStock: true,
+      stock: 3
+    },
+    {
+      id: 9,
+      name: "Apple Watch Series 9",
+      price: 399,
+      originalPrice: 449,
+      image: "https://images.unsplash.com/photo-1551816230-ef5deaed4a26?w=400&h=400&fit=crop",
       rating: 4.7,
-      reviews: 743,
-      category: "Fashion",
-      description: "Premium running shoes with boost technology",
-      stock: 15
+      reviews: 567,
+      discount: 11,
+      category: "Smartwatches",
+      brand: "Apple",
+      inStock: true,
+      stock: 11
+    },
+    {
+      id: 10,
+      name: "Bose SoundLink Flex Speaker",
+      price: 149,
+      originalPrice: 199,
+      image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400&h=400&fit=crop",
+      rating: 4.5,
+      reviews: 345,
+      discount: 25,
+      category: "Speakers",
+      brand: "Bose",
+      inStock: true,
+      stock: 8
+    },
+    {
+      id: 11,
+      name: "Microsoft Surface Pro 9",
+      price: 999,
+      originalPrice: 1199,
+      image: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400&h=400&fit=crop",
+      rating: 4.4,
+      reviews: 189,
+      discount: 17,
+      category: "Tablets",
+      brand: "Microsoft",
+      inStock: true,
+      stock: 5
+    },
+    {
+      id: 12,
+      name: "AirPods Pro 2nd Gen",
+      price: 249,
+      originalPrice: 299,
+      image: "https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?w=400&h=400&fit=crop",
+      rating: 4.8,
+      reviews: 789,
+      discount: 17,
+      category: "Headphones",
+      brand: "Apple",
+      inStock: true,
+      stock: 22
+    },
+    {
+      id: 14,
+      name: "Samsung Galaxy Watch 6",
+      price: 329,
+      originalPrice: 399,
+      image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=400&fit=crop",
+      rating: 4.5,
+      reviews: 234,
+      discount: 18,
+      category: "Smartwatches",
+      brand: "Samsung",
+      inStock: true,
+      stock: 14
+    },
+    {
+      id: 15,
+      name: "JBL Charge 5 Speaker",
+      price: 179,
+      originalPrice: 229,
+      image: "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=400&h=400&fit=crop",
+      rating: 4.6,
+      reviews: 567,
+      discount: 22,
+      category: "Speakers",
+      brand: "JBL",
+      inStock: true,
+      stock: 19
+    },
+    {
+      id: 16,
+      name: "Google Pixel 8 Pro",
+      price: 899,
+      originalPrice: 999,
+      image: "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=400&h=400&fit=crop",
+      rating: 4.7,
+      reviews: 345,
+      discount: 10,
+      category: "Smartphones",
+      brand: "Google",
+      inStock: true,
+      stock: 13
+    },
+    {
+      id: 17,
+      name: "Samsung Galaxy Buds2 Pro",
+      price: 199,
+      originalPrice: 229,
+      image: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400&h=400&fit=crop",
+      rating: 4.6,
+      reviews: 423,
+      discount: 13,
+      category: "Headphones",
+      brand: "Samsung",
+      inStock: true,
+      stock: 16
+    },
+    {
+      id: 18,
+      name: "OnePlus 12 Pro",
+      price: 899,
+      originalPrice: 999,
+      image: "https://smart-phoneprice.com/wp-content/uploads/2023/06/One-Plus-11R-Pro-1024x597.jpg",
+      rating: 4.5,
+      reviews: 312,
+      discount: 10,
+      category: "Smartphones",
+      brand: "OnePlus",
+      inStock: true,
+      stock: 7
+    },
+    {
+      id: 19,
+      name: "Anker PowerCore 26800",
+      price: 65,
+      originalPrice: 79,
+      image: "https://m.media-amazon.com/images/I/61UlAYp9zwL._AC_SL1500_.jpg",
+      rating: 4.7,
+      reviews: 1205,
+      discount: 18,
+      category: "Accessories",
+      brand: "Anker",
+      inStock: true,
+      stock: 25
+    },
+    {
+      id: 20,
+      name: "Garmin Venu 3",
+      price: 449,
+      originalPrice: 499,
+      image: "https://images.expertreviews.co.uk/wp-content/uploads/2023/12/Garmin-venu-3-7-scaled.jpg",
+      rating: 4.6,
+      reviews: 287,
+      discount: 10,
+      category: "Smartwatches",
+      brand: "Garmin",
+      inStock: true,
+      stock: 10
+    },
+    {
+      id: 21,
+      name: "Logitech MX Master 3S",
+      price: 99,
+      originalPrice: 119,
+      image: "https://www.macworld.com/wp-content/uploads/2022/05/MX-Master-3S-hero-1.jpg?quality=50&strip=all",
+      rating: 4.8,
+      reviews: 645,
+      discount: 17,
+      category: "Accessories",
+      brand: "Logitech",
+      inStock: true,
+      stock: 17
+    },
+    {
+      id: 22,
+      name: "Steam Deck OLED",
+      price: 549,
+      originalPrice: 649,
+      image: "https://images.unsplash.com/photo-1612198188060-c7c2a3b66eae?w=400&h=400&fit=crop",
+      rating: 4.7,
+      reviews: 423,
+      discount: 15,
+      category: "Gaming",
+      brand: "Valve",
+      inStock: true,
+      stock: 6
+    },
+    {
+      id: 23,
+      name: "Razer DeathAdder V3 Pro",
+      price: 149,
+      originalPrice: 179,
+      image: "https://latestintech.com/wp-content/uploads/2022/09/razer-v3pro-review-banner.jpg",
+      rating: 4.6,
+      reviews: 234,
+      discount: 17,
+      category: "Accessories",
+      brand: "Razer",
+      inStock: true,
+      stock: 12
+    },
+    {
+      id: 24,
+      name: "Xbox Wireless Controller",
+      price: 59,
+      originalPrice: 69,
+      image: "https://wallpaperaccess.com/full/1519106.jpg",
+      rating: 4.5,
+      reviews: 567,
+      discount: 14,
+      category: "Gaming",
+      brand: "Microsoft",
+      inStock: true,
+      stock: 20
+    },
+    {
+      id: 25,
+      name: "Fitbit Charge 6",
+      price: 199,
+      originalPrice: 229,
+      image: "https://m.media-amazon.com/images/I/61ZtqtvoD2L.jpg",
+      rating: 4.4,
+      reviews: 345,
+      discount: 13,
+      category: "Smartwatches",
+      brand: "Fitbit",
+      inStock: true,
+      stock: 23
+    },
+    {
+      id: 26,
+      name: "SteelSeries Arctic 7P+",
+      price: 169,
+      originalPrice: 199,
+      image: "https://media.steelseriescdn.com/blog/posts/the-new-features-and-upgrades-in-arctis-7p/86ca0ce7e2a54039aa46f49b5e8ca8fe.webp",
+      rating: 4.6,
+      reviews: 289,
+      discount: 15,
+      category: "Headphones",
+      brand: "SteelSeries",
+      inStock: true,
+      stock: 8
+    },
+    {
+      id: 27,
+      name: "Asus ROG Phone 8 Pro",
+      price: 1199,
+      originalPrice: 1299,
+      image: "https://cdn.images.express.co.uk/img/dynamic/59/1200x712/5175058.jpg",
+      rating: 4.7,
+      reviews: 156,
+      discount: 8,
+      category: "Smartphones",
+      brand: "Asus",
+      inStock: true,
+      stock: 5
+    },
+    {
+      id: 28,
+      name: "DJI Mini 4 Pro Drone",
+      price: 759,
+      originalPrice: 899,
+      image: "https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=400&h=400&fit=crop",
+      rating: 4.8,
+      reviews: 178,
+      discount: 16,
+      category: "Cameras",
+      brand: "DJI",
+      inStock: true,
+      stock: 6
+    },
+    {
+      id: 29,
+      name: "Meta Quest 3 VR Headset",
+      price: 499,
+      originalPrice: 649,
+      image: "https://images.unsplash.com/photo-1617802690992-15d93263d3a9?w=400&h=400&fit=crop",
+      rating: 4.6,
+      reviews: 267,
+      discount: 23,
+      category: "Gaming",
+      brand: "Meta",
+      inStock: true,
+      stock: 8
+    },
+    {
+      id: 30,
+      name: "Corsair K70 RGB Keyboard",
+      price: 159,
+      originalPrice: 199,
+      image: "https://images.unsplash.com/photo-1541140532154-b024d705b90a?w=400&h=400&fit=crop",
+      rating: 4.7,
+      reviews: 534,
+      discount: 20,
+      category: "Accessories",
+      brand: "Corsair",
+      inStock: true,
+      stock: 14
+    },
+    {
+      id: 31,
+      name: "Nothing Phone (2a)",
+      price: 349,
+      originalPrice: 399,
+      image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=400&fit=crop",
+      rating: 4.4,
+      reviews: 289,
+      discount: 13,
+      category: "Smartphones",
+      brand: "Nothing",
+      inStock: true,
+      stock: 11
+    },
+    {
+      id: 32,
+      name: "Asus ProArt Display PA278QV",
+      price: 299,
+      originalPrice: 379,
+      image: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400&h=400&fit=crop",
+      rating: 4.5,
+      reviews: 124,
+      discount: 21,
+      category: "Accessories",
+      brand: "Asus",
+      inStock: true,
+      stock: 7
     }
   ];
 
-  const addToCart = (product: any) => {
-    const existingItem = cartItems.find(item => item.id === product.id);
-    let updatedCart;
+  useEffect(() => {
+    updateCartCount();
+    loadWishlist();
+    updateLikedCount();
+  }, []);
+
+  useEffect(() => {
+    filterProducts();
+  }, [searchQuery, selectedCategory, sortBy]);
+
+  const loadWishlist = () => {
+    const savedWishlist = localStorage.getItem('wishlist');
+    if (savedWishlist) {
+      setWishlist(JSON.parse(savedWishlist));
+    }
+  };
+
+  const updateCartCount = () => {
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    const count = cart.reduce((total: number, item: any) => total + item.quantity, 0);
+    setCartCount(count);
+  };
+
+  const updateLikedCount = () => {
+    const likedProducts = JSON.parse(localStorage.getItem('likedProducts') || '[]');
+    setLikedCount(likedProducts.length);
+  };
+
+  const filterProducts = () => {
+    let filtered = products;
+
+    // Filter by category
+    if (selectedCategory !== "All") {
+      filtered = filtered.filter(product => product.category === selectedCategory);
+    }
+
+    // Filter by search query
+    if (searchQuery.trim()) {
+      filtered = filtered.filter(product =>
+        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.brand.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.category.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    // Sort products
+    switch (sortBy) {
+      case "price-low":
+        filtered = filtered.sort((a, b) => a.price - b.price);
+        break;
+      case "price-high":
+        filtered = filtered.sort((a, b) => b.price - a.price);
+        break;
+      case "rating":
+        filtered = filtered.sort((a, b) => b.rating - a.rating);
+        break;
+      case "discount":
+        filtered = filtered.sort((a, b) => b.discount - a.discount);
+        break;
+      default:
+        // Keep original order for "featured"
+        break;
+    }
+
+    setFilteredProducts(filtered);
+  };
+
+  const addToCart = (product: Product) => {
+    const existingCart = JSON.parse(localStorage.getItem('cart') || '[]');
+    const existingItem = existingCart.find((item: any) => item.id === product.id);
     
     if (existingItem) {
-      updatedCart = cartItems.map(item =>
-        item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-      );
+      existingItem.quantity += 1;
     } else {
-      updatedCart = [...cartItems, { ...product, quantity: 1 }];
+      existingCart.push({ ...product, quantity: 1 });
     }
     
-    setCartItems(updatedCart);
-    localStorage.setItem('cart', JSON.stringify(updatedCart));
+    localStorage.setItem('cart', JSON.stringify(existingCart));
+    updateCartCount();
   };
 
-  const toggleLike = (productId: string) => {
-    const productIdStr = productId.toString();
-    let updatedLiked;
+  const toggleWishlist = (productId: number) => {
+    const product = products.find(p => p.id === productId);
+    if (!product) return;
+
+    let newWishlist;
+    const likedProducts = JSON.parse(localStorage.getItem('likedProducts') || '[]');
     
-    if (likedProducts.includes(productIdStr)) {
-      updatedLiked = likedProducts.filter(id => id !== productIdStr);
+    if (wishlist.includes(productId)) {
+      // Remove from wishlist
+      newWishlist = wishlist.filter(id => id !== productId);
+      // Remove from likedProducts
+      const updatedLiked = likedProducts.filter((p: any) => p.id !== productId);
+      localStorage.setItem('likedProducts', JSON.stringify(updatedLiked));
     } else {
-      updatedLiked = [...likedProducts, productIdStr];
+      // Add to wishlist
+      newWishlist = [...wishlist, productId];
+      // Add to likedProducts if not already there
+      const existingProduct = likedProducts.find((p: any) => p.id === productId);
+      if (!existingProduct) {
+        likedProducts.push(product);
+        localStorage.setItem('likedProducts', JSON.stringify(likedProducts));
+      }
     }
-    
-    setLikedProducts(updatedLiked);
-    localStorage.setItem('likedProducts', JSON.stringify(updatedLiked));
+
+    setWishlist(newWishlist);
+    localStorage.setItem('wishlist', JSON.stringify(newWishlist));
+    updateLikedCount();
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('currentUser');
-    localStorage.removeItem('isAdmin');
-    setCurrentUser(null);
-    navigate('/');
+  const scrollToProducts = () => {
+    const productsSection = document.getElementById('products-section');
+    if (productsSection) {
+      productsSection.scrollIntoView({ behavior: 'smooth' });
+    }
   };
-
-  const filteredProducts = products.filter(product =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    product.category.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const totalCartItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-indigo-50">
       {/* Header */}
-      <header className="bg-black/20 backdrop-blur-lg border-b border-white/10 sticky top-0 z-50">
+      <header className="bg-gradient-to-r from-slate-800 to-indigo-900 text-white sticky top-0 z-50 shadow-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <div className="flex items-center space-x-3">
+            <Link to="/" className="flex items-center space-x-3">
               <img 
                 src="/favicon.ico.png" 
                 alt="Nexus Logo" 
-                className="h-8 w-8"
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                }}
+                className="w-10 h-10 object-contain"
               />
-              <h1 className="text-2xl font-bold text-white">Nexus</h1>
-            </div>
+              <div>
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-200 to-purple-200 bg-clip-text text-transparent">
+                  Nexus
+                </h1>
+                <p className="text-xs text-indigo-200">Premium Electronics</p>
+              </div>
+            </Link>
 
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-8">
-              <a href="#" className="text-white hover:text-gray-300 transition-colors">Home</a>
-              <a href="#" className="text-white hover:text-gray-300 transition-colors">Products</a>
-              <a href="#" className="text-white hover:text-gray-300 transition-colors">Categories</a>
-              <a href="#" className="text-white hover:text-gray-300 transition-colors">About</a>
-              <a href="#" className="text-white hover:text-gray-300 transition-colors">Contact</a>
-            </nav>
-
-            {/* Right side icons */}
-            <div className="flex items-center space-x-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <input
+            {/* Search Bar - Desktop */}
+            <div className="hidden md:flex flex-1 max-w-2xl mx-8">
+              <div className="relative w-full">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-5 w-5" />
+                <Input
                   type="text"
-                  placeholder="Search products..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="bg-white/10 border border-white/20 rounded-lg py-2 pl-10 pr-4 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-64"
+                  placeholder="Search for products, brands, and more..."
+                  className="w-full pl-10 pr-4 py-2 bg-white/10 border-white/20 text-white placeholder-indigo-200 focus:bg-white focus:text-slate-800 focus:placeholder-slate-400 transition-all duration-300"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
+            </div>
 
-              {/* Liked Products */}
-              <Link to="/liked" className="relative text-white hover:text-gray-300 transition-colors">
-                <Heart className="h-6 w-6" />
-                {likedProducts.length > 0 && (
-                  <Badge className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center p-0">
-                    {likedProducts.length}
-                  </Badge>
-                )}
+            {/* Right Section */}
+            <div className="flex items-center space-x-4">
+              <Link to="/login">
+                <Button variant="ghost" className="text-indigo-200 hover:text-white hover:bg-white/10">
+                  <User className="h-5 w-5 mr-2" />
+                  Account
+                </Button>
+              </Link>
+              
+              <Link to="/liked" className="relative">
+                <Button variant="ghost" className="text-indigo-200 hover:text-white hover:bg-white/10">
+                  <Heart className="h-5 w-5 mr-2" />
+                  Liked
+                  {likedCount > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                      {likedCount}
+                    </span>
+                  )}
+                </Button>
+              </Link>
+              
+              <Link to="/cart" className="relative">
+                <Button variant="ghost" className="text-indigo-200 hover:text-white hover:bg-white/10">
+                  <ShoppingCart className="h-5 w-5 mr-2" />
+                  Cart
+                  {cartCount > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-purple-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                      {cartCount}
+                    </span>
+                  )}
+                </Button>
               </Link>
 
-              {/* Cart */}
-              <Link to="/cart" className="relative text-white hover:text-gray-300 transition-colors">
-                <ShoppingCart className="h-6 w-6" />
-                {totalCartItems > 0 && (
-                  <Badge className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center p-0">
-                    {totalCartItems}
-                  </Badge>
-                )}
-              </Link>
-
-              {/* User Account */}
-              {currentUser ? (
-                <UserDropdown userEmail={currentUser} onLogout={handleLogout} />
-              ) : (
-                <Link to="/login" className="text-white hover:text-gray-300 transition-colors">
-                  <User className="h-6 w-6" />
-                </Link>
-              )}
-
-              {/* Mobile menu button */}
-              <button
+              {/* Mobile Menu Button */}
+              <Button
+                variant="ghost"
+                className="md:hidden text-indigo-200 hover:text-white"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="md:hidden text-white hover:text-gray-300 transition-colors"
               >
                 {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-              </button>
+              </Button>
             </div>
           </div>
 
-          {/* Mobile Navigation */}
+          {/* Mobile Search */}
           {isMenuOpen && (
-            <div className="md:hidden border-t border-white/10 py-4">
-              <div className="flex flex-col space-y-4">
-                <a href="#" className="text-white hover:text-gray-300 transition-colors">Home</a>
-                <a href="#" className="text-white hover:text-gray-300 transition-colors">Products</a>
-                <a href="#" className="text-white hover:text-gray-300 transition-colors">Categories</a>
-                <a href="#" className="text-white hover:text-gray-300 transition-colors">About</a>
-                <a href="#" className="text-white hover:text-gray-300 transition-colors">Contact</a>
+            <div className="md:hidden pb-4">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-5 w-5" />
+                <Input
+                  type="text"
+                  placeholder="Search products..."
+                  className="w-full pl-10 pr-4 py-2 bg-white/10 border-white/20 text-white placeholder-indigo-200"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
               </div>
             </div>
           )}
@@ -240,198 +684,235 @@ const Index = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="relative py-24 px-4">
-        <div className="max-w-7xl mx-auto text-center">
-          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-            All Things, One Platform
+      <section className="relative bg-gradient-to-r from-indigo-900 via-purple-900 to-slate-900 text-white py-20">
+        <div className="absolute inset-0 bg-black/20"></div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-5xl md:text-7xl font-bold mb-6">
+            <span className="bg-gradient-to-r from-indigo-200 via-purple-200 to-slate-200 bg-clip-text text-transparent">
+              Premium Electronics
+            </span>
           </h1>
-          <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
-            Discover premium products across all categories. From cutting-edge electronics to fashion essentials - everything you need in one place.
+          <p className="text-xl md:text-2xl mb-8 text-indigo-100 max-w-3xl mx-auto">
+            Discover the latest technology and premium electronics with unbeatable prices and exceptional quality.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 text-lg">
-              Explore Products
-            </Button>
-            <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 px-8 py-4 text-lg">
-              Learn More
-            </Button>
-          </div>
+          <Button
+            onClick={scrollToProducts}
+            className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-4 px-8 rounded-full text-lg shadow-2xl transform hover:scale-105 transition-all duration-300"
+          >
+            Start Shopping
+          </Button>
         </div>
+      </section>
 
-        {/* Floating Cards Animation */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-20 left-10 w-20 h-20 bg-blue-500/20 rounded-full blur-xl animate-pulse"></div>
-          <div className="absolute top-40 right-20 w-32 h-32 bg-purple-500/20 rounded-full blur-xl animate-pulse delay-1000"></div>
-          <div className="absolute bottom-20 left-1/4 w-24 h-24 bg-pink-500/20 rounded-full blur-xl animate-pulse delay-2000"></div>
+      {/* Filters Section */}
+      <section className="bg-white shadow-sm border-b" id="products-section">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            {/* Categories */}
+            <div className="flex items-center space-x-2 overflow-x-auto">
+              <Filter className="h-4 w-4 text-slate-600 flex-shrink-0" />
+              {categories.map((category) => (
+                <Button
+                  key={category}
+                  variant={selectedCategory === category ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setSelectedCategory(category)}
+                  className={selectedCategory === category 
+                    ? "bg-indigo-600 hover:bg-indigo-700 text-white flex-shrink-0" 
+                    : "text-slate-600 hover:text-indigo-600 flex-shrink-0"}
+                >
+                  {category}
+                </Button>
+              ))}
+            </div>
+
+            {/* Sort */}
+            <div className="flex items-center space-x-2">
+              <SortAsc className="h-4 w-4 text-slate-600" />
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="border border-slate-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              >
+                <option value="featured">Featured</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="rating">Rating</option>
+                <option value="discount">Discount</option>
+              </select>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Products Section */}
-      <section className="py-16 px-4">
-        <div className="max-w-7xl mx-auto">
+      <section className="py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-white mb-4">Featured Products</h2>
-            <p className="text-gray-300 text-lg">Handpicked items from our premium collection</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">
+              {searchQuery ? `Search Results for "${searchQuery}"` : 'Featured Products'}
+            </h2>
+            <p className="text-lg text-slate-600">
+              {filteredProducts.length} products found
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredProducts.map((product) => (
-              <Card key={product.id} className="bg-white/10 backdrop-blur-lg border-white/20 hover:bg-white/15 transition-all duration-300 group">
-                <CardContent className="p-0">
-                  <div className="relative overflow-hidden rounded-t-lg">
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <button
-                      onClick={() => toggleLike(product.id.toString())}
-                      className={`absolute top-3 right-3 p-2 rounded-full backdrop-blur-sm transition-colors ${
-                        likedProducts.includes(product.id.toString())
-                          ? 'bg-red-500 text-white'
-                          : 'bg-white/20 text-white hover:bg-white/30'
-                      }`}
-                    >
-                      <Heart className="h-4 w-4" fill={likedProducts.includes(product.id.toString()) ? 'currentColor' : 'none'} />
-                    </button>
-                    <Badge className="absolute top-3 left-3 bg-green-500 text-white">
-                      {product.stock} left in stock
-                    </Badge>
-                  </div>
-                  <div className="p-6">
+          {filteredProducts.length === 0 ? (
+            <div className="text-center py-16">
+              <div className="text-6xl mb-4">🔍</div>
+              <h3 className="text-2xl font-bold text-slate-800 mb-2">No products found</h3>
+              <p className="text-slate-600 mb-6">Try adjusting your search or filters</p>
+              <Button
+                onClick={() => {
+                  setSearchQuery("");
+                  setSelectedCategory("All");
+                }}
+                className="bg-indigo-600 hover:bg-indigo-700"
+              >
+                Clear Filters
+              </Button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {filteredProducts.map((product) => (
+                <Card
+                  key={product.id}
+                  className="group hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border-0 shadow-lg bg-white"
+                >
+                  <CardContent className="p-0">
                     <Link to={`/product/${product.id}`}>
-                      <h3 className="text-xl font-semibold text-white mb-2 hover:text-blue-300 transition-colors cursor-pointer">
-                        {product.name}
-                      </h3>
-                    </Link>
-                    <p className="text-gray-300 text-sm mb-3">{product.description}</p>
-                    <div className="flex items-center mb-3">
-                      <div className="flex items-center">
-                        {[...Array(5)].map((_, i) => (
-                          <Star
-                            key={i}
+                      <div className="relative overflow-hidden rounded-t-lg">
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300"
+                        />
+                        {product.discount > 0 && (
+                          <div className="absolute top-2 left-2 bg-gradient-to-r from-red-500 to-pink-500 text-white px-2 py-1 rounded-full text-xs font-bold">
+                            {product.discount}% OFF
+                          </div>
+                        )}
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            toggleWishlist(product.id);
+                          }}
+                          className="absolute top-2 right-2 w-8 h-8 bg-white/80 rounded-full flex items-center justify-center hover:bg-white transition-colors"
+                        >
+                          <Heart
                             className={`h-4 w-4 ${
-                              i < Math.floor(product.rating)
-                                ? 'text-yellow-400 fill-current'
-                                : 'text-gray-400'
+                              wishlist.includes(product.id)
+                                ? "text-red-500 fill-current"
+                                : "text-slate-600"
                             }`}
                           />
-                        ))}
+                        </button>
                       </div>
-                      <span className="text-white ml-2 text-sm">
-                        {product.rating} ({product.reviews} reviews)
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-2xl font-bold text-white">${product.price}</span>
+                    </Link>
+
+                    <div className="p-4">
+                      <Link to={`/product/${product.id}`}>
+                        <h3 className="font-bold text-slate-800 mb-2 group-hover:text-indigo-600 transition-colors line-clamp-2">
+                          {product.name}
+                        </h3>
+                        
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center">
+                            {[...Array(5)].map((_, i) => (
+                              <Star
+                                key={i}
+                                className={`h-4 w-4 ${
+                                  i < Math.floor(product.rating)
+                                    ? "text-yellow-400 fill-current"
+                                    : "text-slate-300"
+                                }`}
+                              />
+                            ))}
+                            <span className="text-sm text-slate-600 ml-2">
+                              ({product.reviews})
+                            </span>
+                          </div>
+                          <span className="text-sm text-green-600 font-medium">
+                            {product.stock} left
+                          </span>
+                        </div>
+
+                        <div className="flex items-center space-x-2 mb-3">
+                          <span className="text-2xl font-bold text-slate-800">
+                            ${product.price}
+                          </span>
+                          {product.originalPrice > product.price && (
+                            <span className="text-sm text-slate-500 line-through">
+                              ${product.originalPrice}
+                            </span>
+                          )}
+                        </div>
+                      </Link>
+
                       <Button
                         onClick={() => addToCart(product)}
-                        className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
+                        className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold transition-all duration-300 transform hover:scale-105"
                       >
+                        <ShoppingCart className="h-4 w-4 mr-2" />
                         Add to Cart
                       </Button>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Categories Section */}
-      <section className="py-16 px-4 bg-black/20">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-white mb-4">Shop by Category</h2>
-            <p className="text-gray-300 text-lg">Explore our diverse range of product categories</p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {['Electronics', 'Fashion', 'Home & Garden', 'Sports'].map((category, index) => (
-              <div key={category} className="bg-gradient-to-br from-blue-600/20 to-purple-600/20 backdrop-blur-lg border border-white/20 rounded-xl p-6 text-center hover:bg-white/10 transition-all duration-300 cursor-pointer group">
-                <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  <span className="text-2xl">
-                    {index === 0 ? '📱' : index === 1 ? '👕' : index === 2 ? '🏠' : '⚽'}
-                  </span>
-                </div>
-                <h3 className="text-xl font-semibold text-white mb-2">{category}</h3>
-                <p className="text-gray-300 text-sm">Discover premium {category.toLowerCase()}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Newsletter Section */}
-      <section className="py-16 px-4">
-        <div className="max-w-4xl mx-auto text-center bg-gradient-to-r from-blue-600/20 to-purple-600/20 backdrop-blur-lg border border-white/20 rounded-2xl p-8">
-          <h2 className="text-3xl font-bold text-white mb-4">Stay Updated</h2>
-          <p className="text-gray-300 mb-6">Get the latest updates on new products and exclusive deals</p>
-          <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="flex-1 bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6">
-              Subscribe
-            </Button>
-          </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-black/40 backdrop-blur-lg border-t border-white/10 py-12 px-4">
-        <div className="max-w-7xl mx-auto">
+      <footer className="bg-gradient-to-r from-slate-900 to-indigo-900 text-white py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center space-x-3 mb-4">
                 <img 
                   src="/favicon.ico.png" 
                   alt="Nexus Logo" 
-                  className="h-8 w-8"
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none';
-                  }}
+                  className="w-8 h-8 object-contain"
                 />
-                <h3 className="text-xl font-bold text-white">Nexus</h3>
+                <h3 className="text-xl font-bold">Nexus</h3>
               </div>
-              <p className="text-gray-400">All Things, One Platform. Your ultimate destination for premium products.</p>
+              <p className="text-indigo-200">
+                Your trusted partner for premium electronics and cutting-edge technology.
+              </p>
             </div>
-            
             <div>
-              <h4 className="text-white font-semibold mb-4">Quick Links</h4>
-              <ul className="space-y-2">
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Home</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Products</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Categories</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">About Us</a></li>
+              <h4 className="font-semibold mb-4">Quick Links</h4>
+              <ul className="space-y-2 text-indigo-200">
+                <li><Link to="/" className="hover:text-white transition-colors">Home</Link></li>
+                <li><Link to="/cart" className="hover:text-white transition-colors">Cart</Link></li>
+                <li><Link to="/liked" className="hover:text-white transition-colors">Liked Products</Link></li>
+                <li><a href="#" className="hover:text-white transition-colors">About Us</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
               </ul>
             </div>
-            
             <div>
-              <h4 className="text-white font-semibold mb-4">Customer Service</h4>
-              <ul className="space-y-2">
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Contact Us</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">FAQ</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Shipping</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Returns</a></li>
+              <h4 className="font-semibold mb-4">Categories</h4>
+              <ul className="space-y-2 text-indigo-200">
+                <li><a href="#" className="hover:text-white transition-colors">Laptops</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Smartphones</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Headphones</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Cameras</a></li>
               </ul>
             </div>
-            
             <div>
-              <h4 className="text-white font-semibold mb-4">Follow Us</h4>
-              <div className="flex space-x-4">
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">Facebook</a>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">Twitter</a>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">Instagram</a>
-              </div>
+              <h4 className="font-semibold mb-4">Support</h4>
+              <ul className="space-y-2 text-indigo-200">
+                <li><a href="#" className="hover:text-white transition-colors">Help Center</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Returns</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Shipping</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Track Order</a></li>
+              </ul>
             </div>
           </div>
-          
-          <div className="border-t border-white/10 mt-8 pt-8 text-center">
-            <p className="text-gray-400">&copy; 2024 Nexus. All rights reserved.</p>
+          <div className="border-t border-indigo-800 mt-8 pt-8 text-center text-indigo-200">
+            <p>&copy; 2024 Nexus Electronics. All rights reserved.</p>
           </div>
         </div>
       </footer>

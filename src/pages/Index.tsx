@@ -17,6 +17,7 @@ interface Product {
   category: string;
   brand: string;
   inStock: boolean;
+  stock: number;
 }
 
 const Index = () => {
@@ -43,7 +44,8 @@ const Index = () => {
       discount: 13,
       category: "Laptops",
       brand: "Apple",
-      inStock: true
+      inStock: true,
+      stock: 7
     },
     {
       id: 2,
@@ -56,7 +58,8 @@ const Index = () => {
       discount: 8,
       category: "Smartphones",
       brand: "Apple",
-      inStock: true
+      inStock: true,
+      stock: 12
     },
     {
       id: 3,
@@ -69,7 +72,8 @@ const Index = () => {
       discount: 25,
       category: "Headphones",
       brand: "Sony",
-      inStock: true
+      inStock: true,
+      stock: 15
     },
     {
       id: 4,
@@ -82,18 +86,22 @@ const Index = () => {
       discount: 18,
       category: "Tablets",
       brand: "Apple",
-      inStock: true
+      inStock: true,
+      stock: 9
     },
     {
       id: 5,
       name: "Canon EOS R5 Camera",
       price: 2499,
       originalPrice: 2899,
-      image: "https://cdn.wallpapersafari.com/20/87/u3MKjO.jpg",      reviews: 156,
+      image: "https://cdn.wallpapersafari.com/20/87/u3MKjO.jpg",
+      rating: 4.8,
+      reviews: 156,
       discount: 14,
       category: "Cameras",
       brand: "Canon",
-      inStock: true
+      inStock: true,
+      stock: 4
     },
     {
       id: 6,
@@ -106,7 +114,8 @@ const Index = () => {
       discount: 17,
       category: "Smartphones",
       brand: "Samsung",
-      inStock: true
+      inStock: true,
+      stock: 18
     },
     {
       id: 7,
@@ -119,7 +128,8 @@ const Index = () => {
       discount: 19,
       category: "Laptops",
       brand: "Dell",
-      inStock: true
+      inStock: true,
+      stock: 6
     },
     {
       id: 8,
@@ -132,7 +142,8 @@ const Index = () => {
       discount: 17,
       category: "Gaming",
       brand: "Sony",
-      inStock: true
+      inStock: true,
+      stock: 3
     },
     {
       id: 9,
@@ -145,7 +156,8 @@ const Index = () => {
       discount: 11,
       category: "Smartwatches",
       brand: "Apple",
-      inStock: true
+      inStock: true,
+      stock: 11
     },
     {
       id: 10,
@@ -158,7 +170,8 @@ const Index = () => {
       discount: 25,
       category: "Speakers",
       brand: "Bose",
-      inStock: true
+      inStock: true,
+      stock: 8
     },
     {
       id: 11,
@@ -171,7 +184,8 @@ const Index = () => {
       discount: 17,
       category: "Tablets",
       brand: "Microsoft",
-      inStock: true
+      inStock: true,
+      stock: 5
     },
     {
       id: 12,
@@ -184,7 +198,8 @@ const Index = () => {
       discount: 17,
       category: "Headphones",
       brand: "Apple",
-      inStock: true
+      inStock: true,
+      stock: 22
     },
     {
       id: 14,
@@ -197,7 +212,8 @@ const Index = () => {
       discount: 18,
       category: "Smartwatches",
       brand: "Samsung",
-      inStock: true
+      inStock: true,
+      stock: 14
     },
     {
       id: 15,
@@ -210,7 +226,8 @@ const Index = () => {
       discount: 22,
       category: "Speakers",
       brand: "JBL",
-      inStock: true
+      inStock: true,
+      stock: 19
     },
     {
       id: 16,
@@ -223,7 +240,8 @@ const Index = () => {
       discount: 10,
       category: "Smartphones",
       brand: "Google",
-      inStock: true
+      inStock: true,
+      stock: 13
     },
     {
       id: 17,
@@ -236,7 +254,8 @@ const Index = () => {
       discount: 13,
       category: "Headphones",
       brand: "Samsung",
-      inStock: true
+      inStock: true,
+      stock: 16
     },
     {
       id: 18,
@@ -249,7 +268,8 @@ const Index = () => {
       discount: 10,
       category: "Smartphones",
       brand: "OnePlus",
-      inStock: true
+      inStock: true,
+      stock: 7
     },
     {
       id: 19,
@@ -262,7 +282,8 @@ const Index = () => {
       discount: 18,
       category: "Accessories",
       brand: "Anker",
-      inStock: true
+      inStock: true,
+      stock: 25
     },
     {
       id: 20,
@@ -275,7 +296,8 @@ const Index = () => {
       discount: 10,
       category: "Smartwatches",
       brand: "Garmin",
-      inStock: true
+      inStock: true,
+      stock: 10
     },
     {
       id: 21,
@@ -288,7 +310,8 @@ const Index = () => {
       discount: 17,
       category: "Accessories",
       brand: "Logitech",
-      inStock: true
+      inStock: true,
+      stock: 17
     },
     {
       id: 22,
@@ -301,7 +324,8 @@ const Index = () => {
       discount: 15,
       category: "Gaming",
       brand: "Valve",
-      inStock: true
+      inStock: true,
+      stock: 6
     },
     {
       id: 23,
@@ -314,7 +338,8 @@ const Index = () => {
       discount: 17,
       category: "Accessories",
       brand: "Razer",
-      inStock: true
+      inStock: true,
+      stock: 12
     },
     {
       id: 24,
@@ -327,7 +352,8 @@ const Index = () => {
       discount: 14,
       category: "Gaming",
       brand: "Microsoft",
-      inStock: true
+      inStock: true,
+      stock: 20
     },
     {
       id: 25,
@@ -340,7 +366,8 @@ const Index = () => {
       discount: 13,
       category: "Smartwatches",
       brand: "Fitbit",
-      inStock: true
+      inStock: true,
+      stock: 23
     },
     {
       id: 26,
@@ -353,7 +380,8 @@ const Index = () => {
       discount: 15,
       category: "Headphones",
       brand: "SteelSeries",
-      inStock: true
+      inStock: true,
+      stock: 8
     },
     {
       id: 27,
@@ -366,7 +394,78 @@ const Index = () => {
       discount: 8,
       category: "Smartphones",
       brand: "Asus",
-      inStock: true
+      inStock: true,
+      stock: 5
+    },
+    {
+      id: 28,
+      name: "DJI Mini 4 Pro Drone",
+      price: 759,
+      originalPrice: 899,
+      image: "https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=400&h=400&fit=crop",
+      rating: 4.8,
+      reviews: 178,
+      discount: 16,
+      category: "Cameras",
+      brand: "DJI",
+      inStock: true,
+      stock: 6
+    },
+    {
+      id: 29,
+      name: "Meta Quest 3 VR Headset",
+      price: 499,
+      originalPrice: 649,
+      image: "https://images.unsplash.com/photo-1617802690992-15d93263d3a9?w=400&h=400&fit=crop",
+      rating: 4.6,
+      reviews: 267,
+      discount: 23,
+      category: "Gaming",
+      brand: "Meta",
+      inStock: true,
+      stock: 8
+    },
+    {
+      id: 30,
+      name: "Corsair K70 RGB Keyboard",
+      price: 159,
+      originalPrice: 199,
+      image: "https://images.unsplash.com/photo-1541140532154-b024d705b90a?w=400&h=400&fit=crop",
+      rating: 4.7,
+      reviews: 534,
+      discount: 20,
+      category: "Accessories",
+      brand: "Corsair",
+      inStock: true,
+      stock: 14
+    },
+    {
+      id: 31,
+      name: "Nothing Phone (2a)",
+      price: 349,
+      originalPrice: 399,
+      image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=400&fit=crop",
+      rating: 4.4,
+      reviews: 289,
+      discount: 13,
+      category: "Smartphones",
+      brand: "Nothing",
+      inStock: true,
+      stock: 11
+    },
+    {
+      id: 32,
+      name: "Asus ProArt Display PA278QV",
+      price: 299,
+      originalPrice: 379,
+      image: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400&h=400&fit=crop",
+      rating: 4.5,
+      reviews: 124,
+      discount: 21,
+      category: "Accessories",
+      brand: "Asus",
+      inStock: true,
+      stock: 7
     }
   ];
 
@@ -496,7 +595,7 @@ const Index = () => {
             {/* Logo */}
             <Link to="/" className="flex items-center space-x-3">
               <img 
-                src="/image-uploads/53edf2d7-993b-41c1-979b-52b9fb1311e3.png" 
+                src="/favicon.ico.png" 
                 alt="Nexus Logo" 
                 className="w-10 h-10 object-contain"
               />
@@ -717,7 +816,7 @@ const Index = () => {
                           {product.name}
                         </h3>
                         
-                        <div className="flex items-center mb-2">
+                        <div className="flex items-center justify-between mb-2">
                           <div className="flex items-center">
                             {[...Array(5)].map((_, i) => (
                               <Star
@@ -729,9 +828,12 @@ const Index = () => {
                                 }`}
                               />
                             ))}
+                            <span className="text-sm text-slate-600 ml-2">
+                              ({product.reviews})
+                            </span>
                           </div>
-                          <span className="text-sm text-slate-600 ml-2">
-                            ({product.reviews})
+                          <span className="text-sm text-green-600 font-medium">
+                            {product.stock} left
                           </span>
                         </div>
 
@@ -770,7 +872,7 @@ const Index = () => {
             <div>
               <div className="flex items-center space-x-3 mb-4">
                 <img 
-                  src="/image-uploads/53edf2d7-993b-41c1-979b-52b9fb1311e3.png" 
+                  src="/favicon.ico.png" 
                   alt="Nexus Logo" 
                   className="w-8 h-8 object-contain"
                 />

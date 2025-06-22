@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, ShoppingCart, Heart, Star, Plus, Minus, Truck, Shield, RotateCcw } from "lucide-react";
@@ -18,6 +17,7 @@ interface Product {
   category: string;
   brand: string;
   inStock: boolean;
+  stock: number;
   description?: string;
   features?: string[];
   specifications?: { [key: string]: string };
@@ -32,7 +32,7 @@ const ProductDetails = () => {
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [product, setProduct] = useState<Product | null>(null);
 
-  // All products data
+  // All products data with stock information
   const allProducts: Product[] = [
     {
       id: 1,
@@ -46,6 +46,7 @@ const ProductDetails = () => {
       category: "Laptops",
       brand: "Apple",
       inStock: true,
+      stock: 7,
       description: "The most powerful MacBook Pro ever is here. With the blazing-fast M2 Pro or M2 Max chip — the next generation of Apple silicon — MacBook Pro takes pro performance to the next level.",
       images: [
         "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600&h=600&fit=crop",
@@ -81,6 +82,7 @@ const ProductDetails = () => {
       category: "Smartphones",
       brand: "Apple",
       inStock: true,
+      stock: 12,
       description: "The iPhone 15 Pro Max is the ultimate iPhone with powerful A17 Pro chip, titanium design, and advanced camera system.",
       images: [
         "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=600&h=600&fit=crop",
@@ -103,7 +105,7 @@ const ProductDetails = () => {
         "Material": "Titanium"
       }
     }
-    // Add more products as needed...
+    // Add more detailed products as needed...
   ];
 
   useEffect(() => {
@@ -125,6 +127,7 @@ const ProductDetails = () => {
           category: "Electronics",
           brand: "Premium",
           inStock: true,
+          stock: getProductStockById(parseInt(id)),
           description: "High-quality electronic product with premium features and excellent performance.",
           images: [getProductImageById(parseInt(id))],
           features: [
@@ -172,7 +175,18 @@ const ProductDetails = () => {
       18: "OnePlus 12 Pro",
       19: "Anker PowerCore 26800",
       20: "Garmin Venu 3",
-      21: "Logitech MX Master 3S"
+      21: "Logitech MX Master 3S",
+      22: "Steam Deck OLED",
+      23: "Razer DeathAdder V3 Pro",
+      24: "Xbox Wireless Controller",
+      25: "Fitbit Charge 6",
+      26: "SteelSeries Arctic 7P+",
+      27: "Asus ROG Phone 8 Pro",
+      28: "DJI Mini 4 Pro Drone",
+      29: "Meta Quest 3 VR Headset",
+      30: "Corsair K70 RGB Keyboard",
+      31: "Nothing Phone (2a)",
+      32: "Asus ProArt Display PA278QV"
     };
     return productNames[productId] || "Premium Product";
   };
@@ -180,7 +194,8 @@ const ProductDetails = () => {
   const getProductPriceById = (productId: number): number => {
     const productPrices: { [key: number]: number } = {
       1: 1999, 2: 1199, 3: 299, 4: 899, 5: 2499, 6: 999, 7: 1299, 8: 499, 9: 399, 10: 149,
-      11: 999, 12: 249, 14: 329, 15: 179, 16: 899, 17: 199, 18: 899, 19: 65, 20: 449, 21: 99
+      11: 999, 12: 249, 14: 329, 15: 179, 16: 899, 17: 199, 18: 899, 19: 65, 20: 449, 21: 99,
+      22: 549, 23: 149, 24: 59, 25: 199, 26: 169, 27: 1199, 28: 759, 29: 499, 30: 159, 31: 349, 32: 299
     };
     return productPrices[productId] || 299;
   };
@@ -188,9 +203,19 @@ const ProductDetails = () => {
   const getProductOriginalPriceById = (productId: number): number => {
     const productOriginalPrices: { [key: number]: number } = {
       1: 2299, 2: 1299, 3: 399, 4: 1099, 5: 2899, 6: 1199, 7: 1599, 8: 599, 9: 449, 10: 199,
-      11: 1199, 12: 299, 14: 399, 15: 229, 16: 999, 17: 229, 18: 999, 19: 79, 20: 499, 21: 119
+      11: 1199, 12: 299, 14: 399, 15: 229, 16: 999, 17: 229, 18: 999, 19: 79, 20: 499, 21: 119,
+      22: 649, 23: 179, 24: 69, 25: 229, 26: 199, 27: 1299, 28: 899, 29: 649, 30: 199, 31: 399, 32: 379
     };
     return productOriginalPrices[productId] || 399;
+  };
+
+  const getProductStockById = (productId: number): number => {
+    const productStock: { [key: number]: number } = {
+      1: 7, 2: 12, 3: 15, 4: 9, 5: 4, 6: 18, 7: 6, 8: 3, 9: 11, 10: 8,
+      11: 5, 12: 22, 14: 14, 15: 19, 16: 13, 17: 16, 18: 7, 19: 25, 20: 10, 21: 17,
+      22: 6, 23: 12, 24: 20, 25: 23, 26: 8, 27: 5, 28: 6, 29: 8, 30: 14, 31: 11, 32: 7
+    };
+    return productStock[productId] || 10;
   };
 
   const getProductImageById = (productId: number): string => {
@@ -199,7 +224,7 @@ const ProductDetails = () => {
       2: "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=600&h=600&fit=crop",
       3: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&h=600&fit=crop",
       4: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=600&h=600&fit=crop",
-      5: "https://images.unsplash.com/photo-1606983340126-99ab4feaa64b?w=600&h=600&fit=crop",
+      5: "https://cdn.wallpapersafari.com/20/87/u3MKjO.jpg",
       6: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&h=600&fit=crop",
       7: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=600&h=600&fit=crop",
       8: "https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=600&h=600&fit=crop",
@@ -211,10 +236,16 @@ const ProductDetails = () => {
       15: "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=600&h=600&fit=crop",
       16: "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=600&h=600&fit=crop",
       17: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=600&h=600&fit=crop",
-      18: "https://images.unsplash.com/photo-1574944985070-8f3ebc6b79d2?w=600&h=600&fit=crop",
-      19: "https://images.unsplash.com/photo-1609592800696-13d2332e3d68?w=600&h=600&fit=crop",
-      20: "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=600&h=600&fit=crop",
-      21: "https://images.unsplash.com/photo-1527814050087-3793815479db?w=600&h=600&fit=crop"
+      18: "https://smart-phoneprice.com/wp-content/uploads/2023/06/One-Plus-11R-Pro-1024x597.jpg",
+      19: "https://m.media-amazon.com/images/I/61UlAYp9zwL._AC_SL1500_.jpg",
+      20: "https://images.expertreviews.co.uk/wp-content/uploads/2023/12/Garmin-venu-3-7-scaled.jpg",
+      21: "https://www.macworld.com/wp-content/uploads/2022/05/MX-Master-3S-hero-1.jpg?quality=50&strip=all",
+      22: "https://images.unsplash.com/photo-1612198188060-c7c2a3b66eae?w=600&h=600&fit=crop",
+      23: "https://latestintech.com/wp-content/uploads/2022/09/razer-v3pro-review-banner.jpg",
+      24: "https://wallpaperaccess.com/full/1519106.jpg",
+      25: "https://m.media-amazon.com/images/I/61ZtqtvoD2L.jpg",
+      26: "https://media.steelseriescdn.com/blog/posts/the-new-features-and-upgrades-in-arctis-7p/86ca0ce7e2a54039aa46f49b5e8ca8fe.webp"
+      // ... keep existing code (rest of the image mapping)
     };
     return productImages[productId] || "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600&h=600&fit=crop";
   };
@@ -322,22 +353,35 @@ const ProductDetails = () => {
           <div className="space-y-6">
             <div>
               <h1 className="text-3xl font-bold text-slate-800 mb-2">{product.name}</h1>
-              <div className="flex items-center space-x-2 mb-4">
-                <div className="flex items-center">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className={`h-5 w-5 ${
-                        i < Math.floor(product.rating)
-                          ? "text-yellow-400 fill-current"
-                          : "text-gray-300"
-                      }`}
-                    />
-                  ))}
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center space-x-2">
+                  <div className="flex items-center">
+                    {[...Array(5)].map((_, i) => (
+                      <Star
+                        key={i}
+                        className={`h-5 w-5 ${
+                          i < Math.floor(product.rating)
+                            ? "text-yellow-400 fill-current"
+                            : "text-gray-300"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  <span className="text-lg text-slate-600">
+                    {product.rating} ({product.reviews} reviews)
+                  </span>
                 </div>
-                <span className="text-lg text-slate-600">
-                  {product.rating} ({product.reviews} reviews)
-                </span>
+                <div className="flex items-center space-x-2">
+                  <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                    product.stock <= 5 
+                      ? 'bg-red-100 text-red-800' 
+                      : product.stock <= 10 
+                      ? 'bg-yellow-100 text-yellow-800' 
+                      : 'bg-green-100 text-green-800'
+                  }`}>
+                    {product.stock} left in stock
+                  </span>
+                </div>
               </div>
             </div>
 
@@ -370,28 +414,33 @@ const ProductDetails = () => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => setQuantity(quantity + 1)}
+                  onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
                   className="h-10 w-10"
                 >
                   <Plus className="h-4 w-4" />
                 </Button>
               </div>
+              <span className="text-sm text-slate-600">
+                (Max: {product.stock} available)
+              </span>
             </div>
 
             {/* Action Buttons */}
             <div className="flex space-x-4">
               <Button
                 onClick={addToCart}
-                className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 text-lg"
+                disabled={product.stock === 0}
+                className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 text-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <ShoppingCart className="h-5 w-5 mr-2" />
-                Add to Cart
+                {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
               </Button>
               <Button
                 onClick={buyNow}
-                className="flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-semibold py-3 text-lg"
+                disabled={product.stock === 0}
+                className="flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-semibold py-3 text-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Buy Now
+                {product.stock === 0 ? 'Out of Stock' : 'Buy Now'}
               </Button>
               <Button
                 variant="outline"
@@ -452,6 +501,15 @@ const ProductDetails = () => {
                       <span className="text-slate-600">{value}</span>
                     </div>
                   ))}
+                  <div className="flex justify-between">
+                    <span className="font-medium text-slate-800">Stock:</span>
+                    <span className={`font-semibold ${
+                      product.stock <= 5 ? 'text-red-600' : 
+                      product.stock <= 10 ? 'text-yellow-600' : 'text-green-600'
+                    }`}>
+                      {product.stock} units available
+                    </span>
+                  </div>
                 </div>
               </CardContent>
             </Card>

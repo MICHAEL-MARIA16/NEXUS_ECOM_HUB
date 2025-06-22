@@ -1,12 +1,13 @@
 
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useToast } from "@/hooks/use-toast";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -20,30 +21,142 @@ const Login = () => {
     phone: "",
     address: ""
   });
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  // Check if user is already logged in
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const user = localStorage.getItem("user");
+    if (token && user) {
+      navigate("/");
+    }
+  }, [navigate]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Login attempt:", loginData);
-    // TODO: Implement authentication with Supabase
+    
+    if (!loginData.email || !loginData.password) {
+      toast({
+        title: "Error",
+        description: "Please fill in all fields",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Simple validation - in real app, this would be server-side
+    const registeredUsers = JSON.parse(localStorage.getItem("registeredUsers") || "[]");
+    const user = registeredUsers.find((u: any) => 
+      u.email === loginData.email && u.password === loginData.password
+    );
+
+    if (user) {
+      // Create session
+      const token = `token_${Date.now()}_${Math.random()}`;
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify({
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName
+      }));
+
+      toast({
+        title: "Success",
+        description: "Login successful! Welcome back.",
+      });
+
+      // Redirect to home page
+      navigate("/");
+    } else {
+      toast({
+        title: "Error",
+        description: "Invalid email or password. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
-    if (registerData.password !== registerData.confirmPassword) {
-      alert("Passwords don't match!");
+    
+    if (!registerData.firstName || !registerData.lastName || !registerData.email || !registerData.password) {
+      toast({
+        title: "Error",
+        description: "Please fill in all required fields",
+        variant: "destructive",
+      });
       return;
     }
-    console.log("Register attempt:", registerData);
-    // TODO: Implement registration with Supabase
+
+    if (registerData.password !== registerData.confirmPassword) {
+      toast({
+        title: "Error",
+        description: "Passwords don't match!",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (registerData.password.length < 6) {
+      toast({
+        title: "Error",
+        description: "Password must be at least 6 characters long",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Check if user already exists
+    const registeredUsers = JSON.parse(localStorage.getItem("registeredUsers") || "[]");
+    const existingUser = registeredUsers.find((u: any) => u.email === registerData.email);
+
+    if (existingUser) {
+      toast({
+        title: "Error",
+        description: "An account with this email already exists",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Create new user
+    const newUser = {
+      id: Date.now(),
+      ...registerData,
+      createdAt: new Date().toISOString()
+    };
+
+    registeredUsers.push(newUser);
+    localStorage.setItem("registeredUsers", JSON.stringify(registeredUsers));
+
+    // Auto-login after registration
+    const token = `token_${Date.now()}_${Math.random()}`;
+    localStorage.setItem("token", token);
+    localStorage.setItem("user", JSON.stringify({
+      id: newUser.id,
+      email: newUser.email,
+      firstName: newUser.firstName,
+      lastName: newUser.lastName
+    }));
+
+    toast({
+      title: "Success",
+      description: "Account created successfully! Welcome to Nexus.",
+    });
+
+    // Redirect to home page
+    navigate("/");
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-100 to-pink-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-100 to-purple-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Back to Home */}
         <Link
           to="/"
-          className="inline-flex items-center space-x-2 text-purple-600 hover:text-purple-700 mb-6 transition-colors"
+          className="inline-flex items-center space-x-2 text-indigo-600 hover:text-indigo-700 mb-6 transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
           <span>Back to Home</span>
@@ -51,12 +164,14 @@ const Login = () => {
 
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-              <div className="w-4 h-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></div>
-            </div>
+          <div className="w-16 h-16 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <img 
+              src="/image-uploads/53edf2d7-993b-41c1-979b-52b9fb1311e3.png" 
+              alt="Nexus Logo" 
+              className="w-10 h-10 object-contain"
+            />
           </div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
             Nexus
           </h1>
           <p className="text-slate-600">All Things, One Platform</p>
@@ -65,10 +180,10 @@ const Login = () => {
         <Card className="shadow-xl border-0">
           <Tabs defaultValue="login" className="w-full">
             <TabsList className="grid w-full grid-cols-2 mb-6">
-              <TabsTrigger value="login" className="data-[state=active]:bg-gradient-to-r from-purple-500 to-pink-500 data-[state=active]:text-white">
+              <TabsTrigger value="login" className="data-[state=active]:bg-gradient-to-r from-indigo-500 to-purple-500 data-[state=active]:text-white">
                 Login
               </TabsTrigger>
-              <TabsTrigger value="register" className="data-[state=active]:bg-gradient-to-r from-purple-500 to-pink-500 data-[state=active]:text-white">
+              <TabsTrigger value="register" className="data-[state=active]:bg-gradient-to-r from-indigo-500 to-purple-500 data-[state=active]:text-white">
                 Register
               </TabsTrigger>
             </TabsList>
@@ -90,7 +205,7 @@ const Login = () => {
                       type="email"
                       placeholder="Enter your email"
                       value={loginData.email}
-                      onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
+                      onChange={(e) =>setLoginData({ ...loginData, email: e.target.value })}
                       required
                     />
                   </div>
@@ -119,7 +234,7 @@ const Login = () => {
                       <input type="checkbox" className="rounded border-gray-300" />
                       <span className="text-slate-600">Remember me</span>
                     </label>
-                    <Link to="#" className="text-sm text-purple-600 hover:text-purple-700">
+                    <Link to="#" className="text-sm text-indigo-600 hover:text-indigo-700">
                       Forgot password?
                     </Link>
                   </div>
@@ -127,7 +242,7 @@ const Login = () => {
                 <CardFooter>
                   <Button
                     type="submit"
-                    className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold"
+                    className="w-full bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white font-semibold"
                   >
                     Sign In
                   </Button>
@@ -186,7 +301,6 @@ const Login = () => {
                       placeholder="(555) 123-4567"
                       value={registerData.phone}
                       onChange={(e) => setRegisterData({ ...registerData, phone: e.target.value })}
-                      required
                     />
                   </div>
                   <div className="space-y-2">
@@ -196,7 +310,6 @@ const Login = () => {
                       placeholder="123 Main St, City, State 12345"
                       value={registerData.address}
                       onChange={(e) => setRegisterData({ ...registerData, address: e.target.value })}
-                      required
                     />
                   </div>
                   <div className="space-y-2">
@@ -234,11 +347,11 @@ const Login = () => {
                     <input type="checkbox" id="terms" className="rounded border-gray-300" required />
                     <label htmlFor="terms" className="text-sm text-slate-600">
                       I agree to the{" "}
-                      <Link to="#" className="text-purple-600 hover:text-purple-700">
+                      <Link to="#" className="text-indigo-600 hover:text-indigo-700">
                         Terms of Service
                       </Link>{" "}
                       and{" "}
-                      <Link to="#" className="text-purple-600 hover:text-purple-700">
+                      <Link to="#" className="text-indigo-600 hover:text-indigo-700">
                         Privacy Policy
                       </Link>
                     </label>
@@ -247,7 +360,7 @@ const Login = () => {
                 <CardFooter>
                   <Button
                     type="submit"
-                    className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold"
+                    className="w-full bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white font-semibold"
                   >
                     Create Account
                   </Button>

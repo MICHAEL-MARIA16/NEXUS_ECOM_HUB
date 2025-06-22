@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Search, ShoppingCart, Star, Heart, User, Menu, X, Filter, SortAsc } from "lucide-react";
@@ -28,7 +29,7 @@ const Index = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [wishlist, setWishlist] = useState<number[]>([]);
 
-  const categories = ["All", "Laptops", "Smartphones", "Headphones", "Tablets", "Cameras", "Gaming", "Smartwatches", "Speakers"];
+  const categories = ["All", "Laptops", "Smartphones", "Headphones", "Tablets", "Cameras", "Gaming", "Smartwatches", "Speakers", "Accessories"];
   
   const products: Product[] = [
     {
@@ -88,7 +89,7 @@ const Index = () => {
       name: "Canon EOS R5 Camera",
       price: 2499,
       originalPrice: 2899,
-      image: "https://www.goodfreephotos.com/albums/business-and-technology/canon-camera-t2i.jpg",
+      image: "https://images.unsplash.com/photo-1606983340126-99ab4feaa64b?w=400&h=400&fit=crop",
       rating: 4.9,
       reviews: 156,
       discount: 14,
@@ -188,19 +189,6 @@ const Index = () => {
       inStock: true
     },
     {
-      id: 13,
-      name: "Nintendo Switch OLED",
-      price: 349,
-      originalPrice: 399,
-      image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=400&fit=crop",
-      rating: 4.6,
-      reviews: 456,
-      discount: 13,
-      category: "Gaming",
-      brand: "Nintendo",
-      inStock: true
-    },
-    {
       id: 14,
       name: "Samsung Galaxy Watch 6",
       price: 329,
@@ -238,16 +226,89 @@ const Index = () => {
       category: "Smartphones",
       brand: "Google",
       inStock: true
+    },
+    {
+      id: 17,
+      name: "Samsung Galaxy Buds2 Pro",
+      price: 199,
+      originalPrice: 229,
+      image: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400&h=400&fit=crop",
+      rating: 4.6,
+      reviews: 423,
+      discount: 13,
+      category: "Headphones",
+      brand: "Samsung",
+      inStock: true
+    },
+    {
+      id: 18,
+      name: "OnePlus 12 Pro",
+      price: 899,
+      originalPrice: 999,
+      image: "https://images.unsplash.com/photo-1574944985070-8f3ebc6b79d2?w=400&h=400&fit=crop",
+      rating: 4.5,
+      reviews: 312,
+      discount: 10,
+      category: "Smartphones",
+      brand: "OnePlus",
+      inStock: true
+    },
+    {
+      id: 19,
+      name: "Anker PowerCore 26800",
+      price: 65,
+      originalPrice: 79,
+      image: "https://images.unsplash.com/photo-1609592800696-13d2332e3d68?w=400&h=400&fit=crop",
+      rating: 4.7,
+      reviews: 1205,
+      discount: 18,
+      category: "Accessories",
+      brand: "Anker",
+      inStock: true
+    },
+    {
+      id: 20,
+      name: "Garmin Venu 3",
+      price: 449,
+      originalPrice: 499,
+      image: "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=400&h=400&fit=crop",
+      rating: 4.6,
+      reviews: 287,
+      discount: 10,
+      category: "Smartwatches",
+      brand: "Garmin",
+      inStock: true
+    },
+    {
+      id: 21,
+      name: "Logitech MX Master 3S",
+      price: 99,
+      originalPrice: 119,
+      image: "https://images.unsplash.com/photo-1527814050087-3793815479db?w=400&h=400&fit=crop",
+      rating: 4.8,
+      reviews: 645,
+      discount: 17,
+      category: "Accessories",
+      brand: "Logitech",
+      inStock: true
     }
   ];
 
   useEffect(() => {
     updateCartCount();
+    loadWishlist();
   }, []);
 
   useEffect(() => {
     filterProducts();
   }, [searchQuery, selectedCategory, sortBy]);
+
+  const loadWishlist = () => {
+    const savedWishlist = localStorage.getItem('wishlist');
+    if (savedWishlist) {
+      setWishlist(JSON.parse(savedWishlist));
+    }
+  };
 
   const updateCartCount = () => {
     const cart = JSON.parse(localStorage.getItem('cart') || '[]');
@@ -309,11 +370,32 @@ const Index = () => {
   };
 
   const toggleWishlist = (productId: number) => {
-    setWishlist(prev => 
-      prev.includes(productId) 
-        ? prev.filter(id => id !== productId)
-        : [...prev, productId]
-    );
+    const product = products.find(p => p.id === productId);
+    if (!product) return;
+
+    let newWishlist;
+    if (wishlist.includes(productId)) {
+      newWishlist = wishlist.filter(id => id !== productId);
+    } else {
+      newWishlist = [...wishlist, productId];
+      // Also save product data to likedProducts for the liked page
+      const likedProducts = JSON.parse(localStorage.getItem('likedProducts') || '[]');
+      const existingProduct = likedProducts.find((p: any) => p.id === productId);
+      if (!existingProduct) {
+        likedProducts.push(product);
+        localStorage.setItem('likedProducts', JSON.stringify(likedProducts));
+      }
+    }
+
+    setWishlist(newWishlist);
+    localStorage.setItem('wishlist', JSON.stringify(newWishlist));
+
+    // Update likedProducts when removing from wishlist
+    if (!newWishlist.includes(productId)) {
+      const likedProducts = JSON.parse(localStorage.getItem('likedProducts') || '[]');
+      const updatedLiked = likedProducts.filter((p: any) => p.id !== productId);
+      localStorage.setItem('likedProducts', JSON.stringify(updatedLiked));
+    }
   };
 
   const scrollToProducts = () => {
@@ -360,10 +442,12 @@ const Index = () => {
 
             {/* Right Section */}
             <div className="flex items-center space-x-4">
-              <Button variant="ghost" className="text-indigo-200 hover:text-white hover:bg-white/10">
-                <User className="h-5 w-5 mr-2" />
-                Account
-              </Button>
+              <Link to="/login">
+                <Button variant="ghost" className="text-indigo-200 hover:text-white hover:bg-white/10">
+                  <User className="h-5 w-5 mr-2" />
+                  Account
+                </Button>
+              </Link>
               
               <Link to="/cart" className="relative">
                 <Button variant="ghost" className="text-indigo-200 hover:text-white hover:bg-white/10">
@@ -592,7 +676,7 @@ const Index = () => {
             <div>
               <div className="flex items-center space-x-3 mb-4">
                 <img 
-                  src="/lovable-uploads/53edf2d7-993b-41c1-979b-52b9fb1311e3.png" 
+                  src="/image-uploads/53edf2d7-993b-41c1-979b-52b9fb1311e3.png" 
                   alt="Nexus Logo" 
                   className="w-8 h-8 object-contain"
                 />
@@ -607,6 +691,7 @@ const Index = () => {
               <ul className="space-y-2 text-indigo-200">
                 <li><Link to="/" className="hover:text-white transition-colors">Home</Link></li>
                 <li><Link to="/cart" className="hover:text-white transition-colors">Cart</Link></li>
+                <li><Link to="/liked" className="hover:text-white transition-colors">Liked Products</Link></li>
                 <li><a href="#" className="hover:text-white transition-colors">About Us</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
               </ul>
@@ -626,7 +711,7 @@ const Index = () => {
                 <li><a href="#" className="hover:text-white transition-colors">Help Center</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Returns</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Shipping</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Track Order</a></li>
+                <li>< href="#" className="hover:text-white transition-colors">Track Order</a></li>
               </ul>
             </div>
           </div>

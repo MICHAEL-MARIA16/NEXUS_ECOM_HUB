@@ -14,7 +14,6 @@ import Checkout from "./pages/Checkout";
 import LikedProducts from "./pages/LikedProducts";
 import AuthGuard from "@/components/AuthGuard";
 
-
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -26,16 +25,40 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/admin" element={<Admin />} />
           <Route path="/product/:id" element={<ProductDetails />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/checkout" element={<Checkout />} />
+          <Route 
+            path="/cart" 
+            element={
+              <AuthGuard>
+                <Cart />
+              </AuthGuard>
+            } 
+          />
+          <Route 
+            path="/checkout" 
+            element={
+              <AuthGuard>
+                <Checkout />
+              </AuthGuard>
+            } 
+          />
+          <Route 
+            path="/liked" 
+            element={
+              <AuthGuard>
+                <LikedProducts />
+              </AuthGuard>
+            } 
+          />
+          <Route 
+            path="/admin" 
+            element={
+              <AuthGuard>
+                <Admin />
+              </AuthGuard>
+            } 
+          />
           <Route path="*" element={<NotFound />} />
-          <Route path="/liked" element={<AuthGuard><LikedProducts /></AuthGuard>} />
-          <Route path="/cart" element={<AuthGuard><Cart /></AuthGuard>} />
-          <Route path="/checkout" element={<AuthGuard><Checkout /></AuthGuard>} />
-          <Route path="/liked" element={<AuthGuard><LikedProducts /></AuthGuard>} />
-          <Route path="/admin" element={<AuthGuard><Admin /></AuthGuard>} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

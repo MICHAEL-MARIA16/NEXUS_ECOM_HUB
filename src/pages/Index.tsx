@@ -4,6 +4,7 @@ import { Search, ShoppingCart, Star, Heart, User, Menu, X, Filter, SortAsc } fro
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
+import UserDropdown from "@/components/UserDropdown";
 
 interface Product {
   id: number;
@@ -29,6 +30,7 @@ const Index = () => {
   const [sortBy, setSortBy] = useState("featured");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [wishlist, setWishlist] = useState<number[]>([]);
+  const [currentUser, setCurrentUser] = useState<string | null>(null);
 
   const categories = ["All", "Laptops", "Smartphones", "Headphones", "Tablets", "Cameras", "Gaming", "Smartwatches", "Speakers", "Accessories"];
   
@@ -473,6 +475,7 @@ const Index = () => {
     updateCartCount();
     loadWishlist();
     updateLikedCount();
+    checkUserLogin();
   }, []);
 
   useEffect(() => {
@@ -495,6 +498,20 @@ const Index = () => {
   const updateLikedCount = () => {
     const likedProducts = JSON.parse(localStorage.getItem('likedProducts') || '[]');
     setLikedCount(likedProducts.length);
+  };
+
+  const checkUserLogin = () => {
+    const user = localStorage.getItem('currentUser');
+    if (user) {
+      setCurrentUser(user);
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('isAdmin');
+    setCurrentUser(null);
+    window.location.href = '/login';
   };
 
   const filterProducts = () => {
@@ -623,12 +640,16 @@ const Index = () => {
 
             {/* Right Section */}
             <div className="flex items-center space-x-4">
-              <Link to="/login">
-                <Button variant="ghost" className="text-indigo-200 hover:text-white hover:bg-white/10">
-                  <User className="h-5 w-5 mr-2" />
-                  Account
-                </Button>
-              </Link>
+              {currentUser ? (
+                <UserDropdown userEmail={currentUser} onLogout={handleLogout} />
+              ) : (
+                <Link to="/login">
+                  <Button variant="ghost" className="text-indigo-200 hover:text-white hover:bg-white/10">
+                    <User className="h-5 w-5 mr-2" />
+                    Account
+                  </Button>
+                </Link>
+              )}
               
               <Link to="/liked" className="relative">
                 <Button variant="ghost" className="text-indigo-200 hover:text-white hover:bg-white/10">

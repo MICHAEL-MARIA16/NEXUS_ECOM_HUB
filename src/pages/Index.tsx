@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Search, ShoppingCart, Star, Heart, User, Menu, X, Filter, SortAsc } from "lucide-react";
@@ -290,6 +289,84 @@ const Index = () => {
       discount: 17,
       category: "Accessories",
       brand: "Logitech",
+      inStock: true
+    },
+    {
+      id: 22,
+      name: "Steam Deck OLED",
+      price: 549,
+      originalPrice: 649,
+      image: "https://images.unsplash.com/photo-1612198188060-c7c2a3b66eae?w=400&h=400&fit=crop",
+      rating: 4.7,
+      reviews: 423,
+      discount: 15,
+      category: "Gaming",
+      brand: "Valve",
+      inStock: true
+    },
+    {
+      id: 23,
+      name: "Razer DeathAdder V3 Pro",
+      price: 149,
+      originalPrice: 179,
+      image: "https://images.unsplash.com/photo-1527814050087-3793815479db?w=400&h=400&fit=crop",
+      rating: 4.6,
+      reviews: 234,
+      discount: 17,
+      category: "Accessories",
+      brand: "Razer",
+      inStock: true
+    },
+    {
+      id: 24,
+      name: "Xbox Wireless Controller",
+      price: 59,
+      originalPrice: 69,
+      image: "https://images.unsplash.com/photo-1612198188060-c7c2a3b66eae?w=400&h=400&fit=crop",
+      rating: 4.5,
+      reviews: 567,
+      discount: 14,
+      category: "Gaming",
+      brand: "Microsoft",
+      inStock: true
+    },
+    {
+      id: 25,
+      name: "Fitbit Charge 6",
+      price: 199,
+      originalPrice: 229,
+      image: "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=400&h=400&fit=crop",
+      rating: 4.4,
+      reviews: 345,
+      discount: 13,
+      category: "Smartwatches",
+      brand: "Fitbit",
+      inStock: true
+    },
+    {
+      id: 26,
+      name: "SteelSeries Arctic 7P+",
+      price: 169,
+      originalPrice: 199,
+      image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop",
+      rating: 4.6,
+      reviews: 289,
+      discount: 15,
+      category: "Headphones",
+      brand: "SteelSeries",
+      inStock: true
+    },
+    {
+      id: 27,
+      name: "Asus ROG Phone 8 Pro",
+      price: 1199,
+      originalPrice: 1299,
+      image: "https://images.unsplash.com/photo-1574944985070-8f3ebc6b79d2?w=400&h=400&fit=crop",
+      rating: 4.7,
+      reviews: 156,
+      discount: 8,
+      category: "Smartphones",
+      brand: "Asus",
       inStock: true
     }
   ];
@@ -711,7 +788,7 @@ const Index = () => {
                 <li><a href="#" className="hover:text-white transition-colors">Help Center</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Returns</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Shipping</a></li>
-                <li>< href="#" className="hover:text-white transition-colors">Track Order</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Track Order</a></li>
               </ul>
             </div>
           </div>

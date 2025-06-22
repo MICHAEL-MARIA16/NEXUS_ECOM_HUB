@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, ArrowLeft } from "lucide-react";
@@ -45,7 +44,30 @@ const Login = () => {
       return;
     }
 
-    // Simple validation - in real app, this would be server-side
+    // Check for admin login
+    if (loginData.email === "admin@domain.com" && loginData.password === "admin1234") {
+      // Create admin session
+      const token = `admin_token_${Date.now()}_${Math.random()}`;
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify({
+        id: "admin",
+        email: "admin@domain.com",
+        firstName: "Admin",
+        lastName: "User",
+        isAdmin: true
+      }));
+
+      toast({
+        title: "Success",
+        description: "Admin login successful! Welcome back.",
+      });
+
+      // Redirect to admin page
+      navigate("/admin");
+      return;
+    }
+
+    // Regular user validation
     const registeredUsers = JSON.parse(localStorage.getItem("registeredUsers") || "[]");
     const user = registeredUsers.find((u: any) => 
       u.email === loginData.email && u.password === loginData.password

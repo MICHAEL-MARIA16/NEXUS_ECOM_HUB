@@ -23,6 +23,7 @@ const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [cartCount, setCartCount] = useState(0);
+  const [likedCount, setLikedCount] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [sortBy, setSortBy] = useState("featured");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -374,6 +375,7 @@ const Index = () => {
   useEffect(() => {
     updateCartCount();
     loadWishlist();
+    updateLikedCount();
   }, []);
 
   useEffect(() => {
@@ -391,6 +393,11 @@ const Index = () => {
     const cart = JSON.parse(localStorage.getItem('cart') || '[]');
     const count = cart.reduce((total: number, item: any) => total + item.quantity, 0);
     setCartCount(count);
+  };
+
+  const updateLikedCount = () => {
+    const likedProducts = JSON.parse(localStorage.getItem('likedProducts') || '[]');
+    setLikedCount(likedProducts.length);
   };
 
   const filterProducts = () => {
@@ -451,12 +458,18 @@ const Index = () => {
     if (!product) return;
 
     let newWishlist;
+    const likedProducts = JSON.parse(localStorage.getItem('likedProducts') || '[]');
+    
     if (wishlist.includes(productId)) {
+      // Remove from wishlist
       newWishlist = wishlist.filter(id => id !== productId);
+      // Remove from likedProducts
+      const updatedLiked = likedProducts.filter((p: any) => p.id !== productId);
+      localStorage.setItem('likedProducts', JSON.stringify(updatedLiked));
     } else {
+      // Add to wishlist
       newWishlist = [...wishlist, productId];
-      // Also save product data to likedProducts for the liked page
-      const likedProducts = JSON.parse(localStorage.getItem('likedProducts') || '[]');
+      // Add to likedProducts if not already there
       const existingProduct = likedProducts.find((p: any) => p.id === productId);
       if (!existingProduct) {
         likedProducts.push(product);
@@ -466,13 +479,7 @@ const Index = () => {
 
     setWishlist(newWishlist);
     localStorage.setItem('wishlist', JSON.stringify(newWishlist));
-
-    // Update likedProducts when removing from wishlist
-    if (!newWishlist.includes(productId)) {
-      const likedProducts = JSON.parse(localStorage.getItem('likedProducts') || '[]');
-      const updatedLiked = likedProducts.filter((p: any) => p.id !== productId);
-      localStorage.setItem('likedProducts', JSON.stringify(updatedLiked));
-    }
+    updateLikedCount();
   };
 
   const scrollToProducts = () => {
@@ -523,6 +530,18 @@ const Index = () => {
                 <Button variant="ghost" className="text-indigo-200 hover:text-white hover:bg-white/10">
                   <User className="h-5 w-5 mr-2" />
                   Account
+                </Button>
+              </Link>
+              
+              <Link to="/liked" className="relative">
+                <Button variant="ghost" className="text-indigo-200 hover:text-white hover:bg-white/10">
+                  <Heart className="h-5 w-5 mr-2" />
+                  Liked
+                  {likedCount > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                      {likedCount}
+                    </span>
+                  )}
                 </Button>
               </Link>
               

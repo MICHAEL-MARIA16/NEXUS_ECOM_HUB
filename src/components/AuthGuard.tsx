@@ -5,11 +5,13 @@ import { useToast } from "@/hooks/use-toast";
 
 interface AuthGuardProps {
   children: ReactNode;
+  requireAdmin?: boolean;
 }
 
-const AuthGuard = ({ children }: AuthGuardProps) => {
+const AuthGuard = ({ children, requireAdmin = false }: AuthGuardProps) => {
   const [isChecking, setIsChecking] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -20,16 +22,19 @@ const AuthGuard = ({ children }: AuthGuardProps) => {
       if (token && user) {
         try {
           // Validate that user data is valid JSON
-          JSON.parse(user);
+          const userData = JSON.parse(user);
           setIsAuthenticated(true);
+          setIsAdmin(userData.isAdmin || false);
         } catch {
           // Invalid user data, clear storage
           localStorage.removeItem("token");
           localStorage.removeItem("user");
           setIsAuthenticated(false);
+          setIsAdmin(false);
         }
       } else {
         setIsAuthenticated(false);
+        setIsAdmin(false);
       }
       
       setIsChecking(false);
@@ -45,8 +50,14 @@ const AuthGuard = ({ children }: AuthGuardProps) => {
         description: "Please log in to access this page.",
         variant: "destructive",
       });
+    } else if (!isChecking && requireAdmin && !isAdmin) {
+      toast({
+        title: "Admin Access Required",
+        description: "You need admin privileges to access this page.",
+        variant: "destructive",
+      });
     }
-  }, [isChecking, isAuthenticated, toast]);
+  }, [isChecking, isAuthenticated, isAdmin, requireAdmin, toast]);
 
   if (isChecking) {
     return (
@@ -56,7 +67,15 @@ const AuthGuard = ({ children }: AuthGuardProps) => {
     );
   }
 
-  return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />;
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (requireAdmin && !isAdmin) {
+    return <Navigate to="/" replace />;
+  }
+
+  return <>{children}</>;
 };
 
 export default AuthGuard;

@@ -19,30 +19,49 @@ const UserDropdown = ({ userEmail, onLogout }: UserDropdownProps) => {
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    if (isOpen) {
+      // Small delay to prevent immediate closing
+      setTimeout(() => {
+        document.addEventListener('mousedown', handleClickOutside);
+      }, 100);
+    }
+
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []);
+  }, [isOpen]);
+
+  const handleButtonClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsOpen(!isOpen);
+  };
+
+  const handleDropdownClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
 
   return (
     <div className="relative" ref={dropdownRef}>
       <Button
         variant="ghost"
         className="text-indigo-200 hover:text-white hover:bg-white/10"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={handleButtonClick}
       >
         <User className="h-5 w-5 mr-2" />
         Account
       </Button>
 
       {isOpen && (
-        <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+        <div 
+          className="absolute right-0 top-full mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-200 z-[9999]"
+          onClick={handleDropdownClick}
+        >
           <div className="p-4">
             <div className="text-sm text-gray-600 mb-3">
               <strong>Logged in as:</strong>
               <br />
-              <span className="text-indigo-600">{userEmail}</span>
+              <span className="text-indigo-600 break-all">{userEmail}</span>
             </div>
             <Button
               onClick={() => {

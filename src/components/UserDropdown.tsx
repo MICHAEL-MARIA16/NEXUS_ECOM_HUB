@@ -11,19 +11,30 @@ interface UserDropdownProps {
 const UserDropdown = ({ userEmail, onLogout }: UserDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current && 
+        !dropdownRef.current.contains(event.target as Node) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
 
     if (isOpen) {
-      // Small delay to prevent immediate closing
-      setTimeout(() => {
+      // Add a small delay to prevent immediate closing
+      const timeoutId = setTimeout(() => {
         document.addEventListener('mousedown', handleClickOutside);
-      }, 100);
+      }, 50);
+
+      return () => {
+        clearTimeout(timeoutId);
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
     }
 
     return () => {
@@ -34,16 +45,23 @@ const UserDropdown = ({ userEmail, onLogout }: UserDropdownProps) => {
   const handleButtonClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setIsOpen(!isOpen);
+    setIsOpen(prev => !prev);
   };
 
   const handleDropdownClick = (e: React.MouseEvent) => {
+    e.preventDefault();
     e.stopPropagation();
+  };
+
+  const handleLogoutClick = () => {
+    setIsOpen(false);
+    onLogout();
   };
 
   return (
     <div className="relative" ref={dropdownRef}>
       <Button
+        ref={buttonRef}
         variant="ghost"
         className="text-indigo-200 hover:text-white hover:bg-white/10"
         onClick={handleButtonClick}
@@ -64,10 +82,7 @@ const UserDropdown = ({ userEmail, onLogout }: UserDropdownProps) => {
               <span className="text-indigo-600 break-all">{userEmail}</span>
             </div>
             <Button
-              onClick={() => {
-                onLogout();
-                setIsOpen(false);
-              }}
+              onClick={handleLogoutClick}
               variant="outline"
               className="w-full text-red-600 border-red-300 hover:bg-red-50"
             >

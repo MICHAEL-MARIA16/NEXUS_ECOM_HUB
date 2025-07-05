@@ -639,8 +639,8 @@ const Index = () => {
             </div>
 
             {/* Right Section */}
-            <div className="flex items-center space-x-4">
-              {currentUser ? (
+            <div className="flex items-center space-x-4" >
+              {currentUser ? (                  
                 <UserDropdown userEmail={currentUser} onLogout={handleLogout} />
               ) : (
                 <Link to="/login">

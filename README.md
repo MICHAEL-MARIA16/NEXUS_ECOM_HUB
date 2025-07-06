@@ -1,73 +1,44 @@
-# Welcome to your Lovable project
 
-## Project info
+---
 
-**URL**: https://lovable.dev/projects/524a9570-abb2-4ee8-883b-9aaf6f4913ad
+## 🧠 What Makes Nexus Special?
 
-## How can I edit this code?
+- ✅ **Role-Based Routing:** Not just protected, but smart.
+- ✅ **Dynamic UI:** Buttons, routes, and visibility depend on who you are.
+- ✅ **Offline-First:** Everything backed by `localStorage` — no backend needed.
+- ✅ **Admin UX:** Your data, your control. In tabs. In style.
 
-There are several ways of editing your application.
+---
 
-**Use Lovable**
+## 🚧 Future Improvements
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/524a9570-abb2-4ee8-883b-9aaf6f4913ad) and start prompting.
+- [ ] Firebase or Supabase auth integration
+- [ ] Payment gateway (Stripe/Razorpay)
+- [ ] Product upload for admins
+- [ ] Order history for users
+- [ ] Persistent cart/wishlist across devices
 
-Changes made via Lovable will be committed automatically to this repo.
+---
 
-**Use your preferred IDE**
+## 💥 Demo (Coming Soon...)
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+Deploying to **Vercel** or **Netlify**? Link your `build` output and drop your live URL here.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+---
 
-Follow these steps:
+## 👨‍💻 Author
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+Built with 🔥 by **Selcii**  
+_Data Science + AI undergrad | Passionate about frontend, secure systems & digital products._
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+> _"Design like Apple. Code like Google. Secure like AWS."_
 
-# Step 3: Install the necessary dependencies.
-npm i
+---
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+## 📜 License
 
-**Edit a file directly in GitHub**
+This project is licensed under the **MIT License**.  
+Feel free to use, fork, and level up your e-commerce game.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+---
 
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/524a9570-abb2-4ee8-883b-9aaf6f4913ad) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)

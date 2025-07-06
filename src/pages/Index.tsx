@@ -644,19 +644,12 @@ const Index = () => {
 
             {/* Right Section */}
             <div className="flex items-center space-x-4" >
-              {loadingUser ? (
-                <div className="text-indigo-200 animate-pulse">Checking...</div> // you can also just leave this out
-              ) : currentUser ? (
-                <UserDropdown userEmail={currentUser} onLogout={handleLogout} />
-              ) : (
-                <Link to="/login">
-                  <Button variant="ghost" className="text-indigo-200 hover:text-white hover:bg-white/10">
-                    <User className="h-5 w-5 mr-2" />
-                    Account
-                  </Button>
-                </Link>
-              )}
-
+              <Link to="/account">
+                <Button variant="ghost" className="text-indigo-200 hover:text-white hover:bg-white/10">
+                  <User className="h-5 w-5 mr-2" />
+                  Account
+                </Button>
+              </Link>
               
               <Link to="/liked" className="relative">
                 <Button variant="ghost" className="text-indigo-200 hover:text-white hover:bg-white/10">

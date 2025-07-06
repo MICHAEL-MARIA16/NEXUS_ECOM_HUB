@@ -10,39 +10,26 @@ interface UserDropdownProps {
 const UserDropdown = ({ userEmail, onLogout }: UserDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const ignoreNextClickRef = useRef(false);
 
-  // Handle outside clicks to close dropdown
+  // Close dropdown when clicking outside
   useEffect(() => {
-    const handleMouseDown = (event: MouseEvent) => {
-      if (ignoreNextClickRef.current) {
-        ignoreNextClickRef.current = false;
-        return;
-      }
-
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
 
-    if (isOpen) {
-      // Use requestAnimationFrame to defer event attachment
-        document.addEventListener("mousedown", handleMouseDown);
-    }
-
+    document.addEventListener("click", handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleMouseDown);
+      document.removeEventListener("click", handleClickOutside);
     };
-  }, [isOpen]);
+  }, []);
 
   const handleToggle = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (!isOpen) {
-      ignoreNextClickRef.current = true;
-    }
-
+    e.stopPropagation(); // Prevent bubbling
     setIsOpen(prev => !prev);
   };
 
@@ -54,8 +41,7 @@ const UserDropdown = ({ userEmail, onLogout }: UserDropdownProps) => {
   };
 
   const handleDropdownClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+    e.stopPropagation(); // Prevent dropdown from closing itself
   };
 
   return (
@@ -68,14 +54,16 @@ const UserDropdown = ({ userEmail, onLogout }: UserDropdownProps) => {
       >
         <User className="h-5 w-5" />
         <span>Account</span>
-        <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+        <ChevronDown
+          className={`h-4 w-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+        />
       </button>
 
       {/* Dropdown Menu */}
       {isOpen && (
         <div className="absolute right-0 top-full mt-2 z-[9999]">
           {/* Backdrop for mobile */}
-          <div 
+          <div
             className="fixed inset-0 bg-black/20 z-[9998] md:hidden"
             onClick={() => setIsOpen(false)}
           />
@@ -85,7 +73,7 @@ const UserDropdown = ({ userEmail, onLogout }: UserDropdownProps) => {
             onClick={handleDropdownClick}
             style={{
               maxHeight: 'calc(100vh - 100px)',
-              overflow: 'auto'
+              overflow: 'auto',
             }}
           >
             {/* Header */}

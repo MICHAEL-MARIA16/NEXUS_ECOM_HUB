@@ -13,6 +13,7 @@ import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import LikedProducts from "./pages/LikedProducts";
 import AuthGuard from "@/components/AuthGuard";
+import Account from "./pages/Account";
 
 const queryClient = new QueryClient();
 
@@ -55,6 +56,14 @@ const App = () => (
             element={
               <AuthGuard requireAdmin={true}>
                 <Admin />
+              </AuthGuard>
+            } 
+          />
+          <Route 
+            path="/account" 
+            element={
+              <AuthGuard>
+                <Account />
               </AuthGuard>
             } 
           />

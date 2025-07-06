@@ -4,17 +4,17 @@ import { User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Account = () => {
-  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [user, setUser] = useState<{ email: string; role?: string } | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const user = localStorage.getItem("user");
-    if (user) {
+    const userData = localStorage.getItem("user");
+    if (userData) {
       try {
-        const parsedUser = JSON.parse(user);
-        setUserEmail(parsedUser.email || null);
+        const parsedUser = JSON.parse(userData);
+        setUser(parsedUser);
       } catch {
-        setUserEmail(null);
+        setUser(null);
       }
     }
   }, []);
@@ -25,7 +25,7 @@ const Account = () => {
     navigate("/login");
   };
 
-  if (!userEmail) {
+  if (!user) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen text-center">
         <h2 className="text-2xl font-semibold mb-4">You are not logged in</h2>
@@ -43,7 +43,7 @@ const Account = () => {
           </div>
           <div>
             <p className="text-gray-600 text-sm">Logged in as</p>
-            <p className="text-indigo-700 font-semibold">{userEmail}</p>
+            <p className="text-indigo-700 font-semibold">{user?.email}</p>
           </div>
         </div>
 
@@ -58,8 +58,18 @@ const Account = () => {
           onClick={() => navigate("/")}
           className="w-full bg-indigo-600 hover:bg-indigo-700 text-white"
         >
-          🛍️ Continue Shopping
+          Continue Shopping
         </Button>
+        {/* Go to admin button (only if admin) */}
+        {user?.role === "admin" && (
+          <Button
+            onClick={() => navigate("/admin")}
+            className="w-full mt-3 border border-indigo-500 text-indigo-600 hover:bg-indigo-50"
+            variant="outline"
+          >
+            Go to Admin Page
+          </Button>
+        )}
       </div>
     </div>
   );

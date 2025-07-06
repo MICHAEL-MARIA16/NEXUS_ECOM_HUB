@@ -54,7 +54,7 @@ const Login = () => {
         email: "admin@domain.com",
         firstName: "Admin",
         lastName: "User",
-        isAdmin: true
+        role: "admin"
       }));
 
       toast({

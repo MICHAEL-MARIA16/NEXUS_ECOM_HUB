@@ -21,7 +21,7 @@ const AuthGuard = ({ children, requireAdmin = false }: AuthGuardProps) => {
       try {
         const parsedUser = JSON.parse(user);
         setIsAuthenticated(true);
-        setIsAdmin(!!parsedUser.isAdmin);
+        setIsAdmin(parsedUser.role === "admin" || parsedUser.isAdmin === true);
       } catch (error) {
         localStorage.removeItem("token");
         localStorage.removeItem("user");

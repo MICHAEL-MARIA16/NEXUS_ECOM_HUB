@@ -73,6 +73,16 @@ A modern, full-featured e-commerce web application built with React, TypeScript,
 🚀 [NEXUS-ECOM-HUB](https://nexus-ecom-hub.vercel.app/)  
 > Hosted on Vercel | Blazing fast | Always online
 
+## 🚀 Live Demo
+
+<a href="https://nexus-ecom.vercel.app" target="_blank">
+  <img src="https://nexus-ecom.vercel.app/image-uploads/4ed668f5-7f34-4be0-8e74-391cc406acfe.png" 
+       alt="Nexus Logo" 
+       width="220" />
+</a>
+
+> Click the logo above to explore the live site ✨
+
 ---
 
 ## 👨‍💻 Author

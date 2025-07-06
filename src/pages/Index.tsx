@@ -31,6 +31,9 @@ const Index = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [wishlist, setWishlist] = useState<number[]>([]);
   const [currentUser, setCurrentUser] = useState<string | null>(null);
+  const [loadingUser, setLoadingUser] = useState(true); 
+
+
 
   const categories = ["All", "Laptops", "Smartphones", "Headphones", "Tablets", "Cameras", "Gaming", "Smartwatches", "Speakers", "Accessories"];
   
@@ -505,6 +508,7 @@ const Index = () => {
     if (user) {
       setCurrentUser(user);
     }
+    setLoadingUser(false);
   };
 
   const handleLogout = () => {
@@ -640,7 +644,9 @@ const Index = () => {
 
             {/* Right Section */}
             <div className="flex items-center space-x-4" >
-              {currentUser ? (                  
+              {loadingUser ? (
+                <div className="text-indigo-200 animate-pulse">Checking...</div> // you can also just leave this out
+              ) : currentUser ? (
                 <UserDropdown userEmail={currentUser} onLogout={handleLogout} />
               ) : (
                 <Link to="/login">
@@ -650,6 +656,7 @@ const Index = () => {
                   </Button>
                 </Link>
               )}
+
               
               <Link to="/liked" className="relative">
                 <Button variant="ghost" className="text-indigo-200 hover:text-white hover:bg-white/10">

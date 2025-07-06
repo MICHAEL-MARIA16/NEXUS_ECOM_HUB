@@ -50,27 +50,6 @@ A modern, full-featured e-commerce web application built with React, TypeScript,
 
 ---
 
-## 📁 Folder Structure (Key Pages)
-
-src/
-├── pages/
-│ ├── Index.tsx // Homepage with products
-│ ├── Login.tsx // Login & registration
-│ ├── Account.tsx // Role-aware user dashboard
-│ ├── Admin.tsx // Admin control panel
-│ ├── Cart.tsx // User cart
-│ ├── Checkout.tsx // Final checkout
-│ └── LikedProducts.tsx // Wishlist page
-├── components/
-│ ├── AuthGuard.tsx // Route protection
-│ └── admin/ // Admin sub-components
-
-yaml
-Copy
-Edit
-
----
-
 ## 🧠 What Makes Nexus Special?
 
 - ✅ **Role-Based Routing:** Not just protected, but smart.
@@ -82,7 +61,6 @@ Edit
 
 ## 🚧 Future Improvements
 
-- [ ] Firebase or Supabase auth integration
 - [ ] Payment gateway (Stripe/Razorpay)
 - [ ] Product upload for admins
 - [ ] Order history for users
@@ -90,9 +68,10 @@ Edit
 
 ---
 
-## 💥 Demo (Coming Soon...)
+## 💥 Live Demo
 
-Deploying to **Vercel** or **Netlify**? Link your `build` output and drop your live URL here.
+🚀 [Click here to view the deployed app](https://nexus-ecom-hub.vercel.app/)  
+> Hosted on Vercel | Blazing fast | Always online
 
 ---
 

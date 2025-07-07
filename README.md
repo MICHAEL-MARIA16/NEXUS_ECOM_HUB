@@ -75,7 +75,7 @@ A modern, full-featured e-commerce web application built with React, TypeScript,
 > Hosted on Vercel • Blazing Fast ⚡ • Always Online  
 > Click the logo above to explore the live site ✨
 
-🚀 [Click to view the deployed app](https://your-deployment-link.vercel.app)  
+🚀 [Click to view the deployed app](https://nexus-ecom-hub.vercel.app/)  
 
 
 
